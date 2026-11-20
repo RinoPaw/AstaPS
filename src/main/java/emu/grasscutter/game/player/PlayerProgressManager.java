@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static emu.grasscutter.scripts.constants.EventType.EVENT_UNLOCK_TRANS_POINT;
 
 import emu.grasscutter.data.GameData;
@@ -123,7 +123,7 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         // Disabling quests must not activate the first Statue of the Seven or reveal
         // its map area. Point (3,7) is unlocked only by normal gameplay/commands.
 
-        if (GAME_OPTIONS.unlockAllOpenStatesOnLogin) {
+        if (Grasscutter.getConfig().server.game.gameOptions.unlockAllOpenStatesOnLogin) {
             // Sandbox opt-in: preserve the former bulk unlock, but never tie it to questing.
             // Do this before OpenStateUpdateNotify so the login snapshot is complete.
             this.setOpenState(47, 1, false);

@@ -1,6 +1,6 @@
 package emu.grasscutter.server.dispatch;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
+import emu.grasscutter.Grasscutter;
 
 import com.google.gson.*;
 import emu.grasscutter.utils.Crypto;
@@ -133,7 +133,7 @@ public interface IDispatcher {
      */
     default JsonObject decodeMessage(byte[] message) {
         // Decrypt the message.
-        Crypto.xor(message, DISPATCH_INFO.encryptionKey);
+        Crypto.xor(message, Grasscutter.getConfig().server.dispatch.encryptionKey);
         // Deserialize the message.
         return JSON.fromJson(new String(message, StandardCharsets.UTF_8), JsonObject.class);
     }

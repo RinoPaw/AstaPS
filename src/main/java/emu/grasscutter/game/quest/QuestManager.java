@@ -1,7 +1,6 @@
 package emu.grasscutter.game.quest;
 
 import static emu.grasscutter.GameConstants.DEBUG;
-import static emu.grasscutter.config.Configuration.*;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
@@ -93,7 +92,7 @@ public final class QuestManager extends BasePlayerManager {
      * tracker forever, with a "return to quest point" button for its far-away step.
      */
     public static boolean isQuestingActive() {
-        return SERVER.game.enableScriptInBigWorld && GAME_OPTIONS.questing.enabled;
+        return Grasscutter.getConfig().server.game.enableScriptInBigWorld && Grasscutter.getConfig().server.game.gameOptions.questing.enabled;
     }
 
     /** Whether this quest is shown to the client: questing is on, or its line was added by command. */
@@ -105,12 +104,12 @@ public final class QuestManager extends BasePlayerManager {
     /** Checks if questing can be enabled. */
     public boolean isQuestingEnabled() {
         // Check if scripts are enabled.
-        if (!SERVER.game.enableScriptInBigWorld) {
+        if (!Grasscutter.getConfig().server.game.enableScriptInBigWorld) {
             Grasscutter.getLogger().warn("Questing is disabled without scripts enabled.");
             return false;
         }
 
-        return GAME_OPTIONS.questing.enabled;
+        return Grasscutter.getConfig().server.game.gameOptions.questing.enabled;
     }
 
     /**
@@ -337,7 +336,7 @@ public final class QuestManager extends BasePlayerManager {
     public void onLogin() {
         if (this.isQuestingEnabled()) {
             // The sweep is what fills a fresh quest log at login; see questing.triggerAllOnLogin.
-            if (GAME_OPTIONS.questing.triggerAllOnLogin) {
+            if (Grasscutter.getConfig().server.game.gameOptions.questing.triggerAllOnLogin) {
                 this.enableQuests();
             }
             this.sendGivingRecords();

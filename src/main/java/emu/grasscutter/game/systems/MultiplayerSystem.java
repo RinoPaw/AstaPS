@@ -1,6 +1,5 @@
 package emu.grasscutter.game.systems;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.game.CoopRequest;
 import emu.grasscutter.Grasscutter;
@@ -24,7 +23,7 @@ public class MultiplayerSystem extends BaseGameSystem {
     }
 
     private static boolean isFull(World world) {
-        return world.getPlayerCount() >= GAME_OPTIONS.avatarLimits.multiplayerTeam;
+        return world.getPlayerCount() >= Grasscutter.getConfig().server.game.gameOptions.avatarLimits.multiplayerTeam;
     }
 
     public synchronized void applyEnterMp(Player player, int targetUid) {

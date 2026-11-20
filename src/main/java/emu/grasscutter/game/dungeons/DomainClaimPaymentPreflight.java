@@ -1,6 +1,6 @@
 package emu.grasscutter.game.dungeons;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.data.excels.dungeon.DungeonData;
 import emu.grasscutter.game.dungeons.DomainStatueClaimHelper.ClaimMode;
@@ -22,7 +22,7 @@ final class DomainClaimPaymentPreflight {
         if (player == null || data == null || mode == null) return false;
         return affordable(
                 mode, costId, costCount,
-                GAME_OPTIONS.resinOptions.resinUsage,
+                Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage,
                 player.getProperty(PlayerProperty.PROP_PLAYER_RESIN),
                 player.getInventory().getItemCountById(
                         DomainStatueClaimHelper.CONDENSED_RESIN_ITEM_ID),

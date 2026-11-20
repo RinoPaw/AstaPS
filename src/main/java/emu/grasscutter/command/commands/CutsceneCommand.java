@@ -1,6 +1,6 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.command.CommandHandler;
@@ -62,7 +62,7 @@ public final class CutsceneCommand implements CommandHandler {
                 CommandOutput.sendMessage(sender, "Playing a cutscene requires an online player.");
                 return;
             }
-            if (GAME_OPTIONS.disableCutscenes) {
+            if (Grasscutter.getConfig().server.game.gameOptions.disableCutscenes) {
                 CommandOutput.sendMessage(sender, "Cutscenes are disabled by game.disableCutscenes.");
                 return;
             }

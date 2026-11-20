@@ -1,5 +1,6 @@
 package emu.grasscutter.scripts;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.*;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.dungeons.challenge.enums.*;
@@ -294,7 +295,7 @@ public class ScriptLoader {
             if (sources == null) return null;
 
             // Check to see if the script references other scripts.
-            if (!Configuration.FAST_REQUIRE && sources.contains("require")) {
+            if (!Grasscutter.getConfig().server.fastRequire && sources.contains("require")) {
                 var lines = sources.split("\n");
                 var output = new StringBuilder();
                 for (var line : lines) {

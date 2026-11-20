@@ -1,6 +1,5 @@
 package emu.grasscutter.server.http.documentation;
 
-import static emu.grasscutter.config.Configuration.HANDBOOK;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.auth.AuthenticationSystem.AuthenticationRequest;
@@ -29,9 +28,9 @@ public final class HandbookHandler implements Router {
         // The handbook is optional - it is skipped by -PskipHandbook - so read it without
         // FileUtils' "Failed to read resource" warning, which fired on every single start
         this.handbook = readHandbook();
-        this.serve = HANDBOOK.enable && this.handbook.length() > 0;
+        this.serve = Grasscutter.getConfig().server.game.gameOptions.handbook.enable && this.handbook.length() > 0;
 
-        var server = HANDBOOK.server;
+        var server = Grasscutter.getConfig().server.game.gameOptions.handbook.server;
         if (this.serve && server.enforced) {
             this.handbook =
                     this.handbook
@@ -41,7 +40,7 @@ public final class HandbookHandler implements Router {
         }
 
         // Create a new task to reset the request count.
-        if (HANDBOOK.limits.enabled) {
+        if (Grasscutter.getConfig().server.game.gameOptions.handbook.limits.enabled) {
             new Timer()
                     .scheduleAtFixedRate(
                             new TimerTask() {
@@ -51,7 +50,7 @@ public final class HandbookHandler implements Router {
                                 }
                             },
                             0,
-                            TimeUnit.SECONDS.toMillis(HANDBOOK.limits.interval));
+                            TimeUnit.SECONDS.toMillis(Grasscutter.getConfig().server.game.gameOptions.handbook.limits.interval));
         }
     }
 
@@ -84,7 +83,7 @@ public final class HandbookHandler implements Router {
      * @return True if the server can execute handbook commands.
      */
     private boolean controlSupported() {
-        return HANDBOOK.enable && HANDBOOK.allowCommands;
+        return Grasscutter.getConfig().server.game.gameOptions.handbook.enable && Grasscutter.getConfig().server.game.gameOptions.handbook.allowCommands;
     }
 
     /**
@@ -94,7 +93,7 @@ public final class HandbookHandler implements Router {
      * @return True if the request is within the normal limits.
      */
     private boolean normalLimit(Context ctx) {
-        var limits = HANDBOOK.limits;
+        var limits = Grasscutter.getConfig().server.game.gameOptions.handbook.limits;
         if (!limits.enabled) return true;
 
         // Check the request count.
@@ -255,7 +254,7 @@ public final class HandbookHandler implements Router {
         var request = ctx.bodyAsClass(HandbookBody.SpawnEntity.class);
         // Check the entity limit.
         var entityLimit =
-                HANDBOOK.limits.enabled ? Math.max(HANDBOOK.limits.maxEntities, 0) : Long.MAX_VALUE;
+                Grasscutter.getConfig().server.game.gameOptions.handbook.limits.enabled ? Math.max(Grasscutter.getConfig().server.game.gameOptions.handbook.limits.maxEntities, 0) : Long.MAX_VALUE;
         if (request.getAmount() > entityLimit) {
             ctx.status(400)
                     .result(

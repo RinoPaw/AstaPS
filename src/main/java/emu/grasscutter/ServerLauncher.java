@@ -1,6 +1,5 @@
 package emu.grasscutter;
 
-import static emu.grasscutter.config.Configuration.*;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -124,18 +123,18 @@ public final class ServerLauncher implements Callable<Integer> {
             Grasscutter.setPreferredLanguage(language);
             Grasscutter.loadLanguage();
         }
-        if (test) SERVER.http.encryption.useEncryption = false;
+        if (test) Grasscutter.getConfig().server.http.encryption.useEncryption = false;
         if (debug != null) enableDebug();
     }
 
     private void enableDebug() {
         if (debug == Debug.ALL) {
-            GAME_INFO.isShowLoopPackets = DEBUG_MODE_INFO.isShowLoopPackets;
-            GAME_INFO.isShowPacketPayload = DEBUG_MODE_INFO.isShowPacketPayload;
-            GAME_INFO.logPackets = DEBUG_MODE_INFO.logPackets;
-            DISPATCH_INFO.logRequests = DEBUG_MODE_INFO.logRequests;
+            Grasscutter.getConfig().server.game.isShowLoopPackets = Grasscutter.getConfig().server.debugMode.isShowLoopPackets;
+            Grasscutter.getConfig().server.game.isShowPacketPayload = Grasscutter.getConfig().server.debugMode.isShowPacketPayload;
+            Grasscutter.getConfig().server.game.logPackets = Grasscutter.getConfig().server.debugMode.logPackets;
+            Grasscutter.getConfig().server.dispatch.logRequests = Grasscutter.getConfig().server.debugMode.logRequests;
 
-            Level level = DEBUG_MODE_INFO.servicesLoggersLevel;
+            Level level = Grasscutter.getConfig().server.debugMode.servicesLoggersLevel;
             for (String name : new String[] {
                     "io.javalin", "org.quartz", "org.reflections",
                     "org.eclipse.jetty", "org.mongodb.driver"
@@ -143,7 +142,7 @@ public final class ServerLauncher implements Callable<Integer> {
                 ((Logger) LoggerFactory.getLogger(name)).setLevel(level);
             }
         }
-        Grasscutter.getLogger().setLevel(DEBUG_MODE_INFO.serverLoggerLevel);
+        Grasscutter.getLogger().setLevel(Grasscutter.getConfig().server.debugMode.serverLoggerLevel);
         Grasscutter.getLogger().debug("The logger is now running in debug mode.");
         GameConstants.DEBUG = true;
     }

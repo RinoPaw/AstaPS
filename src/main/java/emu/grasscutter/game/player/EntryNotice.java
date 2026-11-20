@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.BuildConfig;
 import emu.grasscutter.server.packet.send.PacketAntiAddictNotify;
@@ -41,7 +41,7 @@ public final class EntryNotice {
         // The welcome banner goes out once per login, half a minute after the player is in.
         var server = player.getServer();
         if (server != null && server.getAnnouncementSystem() != null) {
-            int ticks = (int) Math.ceil(BANNER_DELAY_MS / (double) Math.max(1, GAME_INFO.tickRateMs));
+            int ticks = (int) Math.ceil(BANNER_DELAY_MS / (double) Math.max(1, Grasscutter.getConfig().server.game.tickRateMs));
             server.getScheduler()
                     .scheduleDelayedTask(
                             () -> {

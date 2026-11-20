@@ -87,7 +87,7 @@ final class SceneScriptLifecycleTest {
         var manager = timerManager(events);
 
         assertEquals(0, manager.createGroupTimerEvent(7, "wave", 1.0));
-        int ticks = (int) Math.ceil(1000d / Configuration.GAME_INFO.tickRateMs);
+        int ticks = (int) Math.ceil(1000d / Grasscutter.getConfig().server.game.tickRateMs);
         tick(ticks - 1);
         assertTrue(events.isEmpty(), "fired before one second of ticks");
         tick(1);

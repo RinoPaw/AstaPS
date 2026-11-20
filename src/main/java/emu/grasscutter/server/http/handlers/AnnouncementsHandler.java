@@ -45,11 +45,11 @@ public final class AnnouncementsHandler implements Router {
 
         String dispatchDomain =
                 "http"
-                        + (HTTP_ENCRYPTION.useInRouting ? "s" : "")
+                        + (Grasscutter.getConfig().server.http.encryption.useInRouting ? "s" : "")
                         + "://"
-                        + lr(HTTP_INFO.accessAddress, HTTP_INFO.bindAddress)
+                        + lr(Grasscutter.getConfig().server.http.accessAddress, Grasscutter.getConfig().server.http.bindAddress)
                         + ":"
-                        + lr(HTTP_INFO.accessPort, HTTP_INFO.bindPort);
+                        + lr(Grasscutter.getConfig().server.http.accessPort, Grasscutter.getConfig().server.http.bindPort);
 
         data =
                 data.replace("{{DISPATCH_PUBLIC}}", dispatchDomain)

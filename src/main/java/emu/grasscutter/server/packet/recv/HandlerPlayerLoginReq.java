@@ -1,6 +1,5 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
@@ -24,7 +23,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         }
 
         Player player = session.getPlayer();
-        var intro = GAME_OPTIONS.newAccountIntro;
+        var intro = Grasscutter.getConfig().server.game.gameOptions.newAccountIntro;
         boolean freshAccount = player.getAvatars().getAvatarCount() == 0;
 
         if (freshAccount && intro.enabled) {
@@ -71,7 +70,7 @@ public class HandlerPlayerLoginReq extends PacketHandler {
         int avatarId = 10000007;
         Avatar mainCharacter = new Avatar(avatarId);
 
-        if (!GAME_OPTIONS.questing.enabled) {
+        if (!Grasscutter.getConfig().server.game.gameOptions.questing.enabled) {
             mainCharacter.setSkillDepotData(GameData.getAvatarSkillDepotDataMap().get(704));
         }
 

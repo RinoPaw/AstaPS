@@ -1,6 +1,5 @@
 package emu.grasscutter.utils;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
 
 import com.google.gson.JsonObject;
 import emu.grasscutter.Grasscutter;
@@ -20,7 +19,7 @@ public interface DispatchUtils {
      * @return The dispatch URL.
      */
     static String getDispatchUrl() {
-        return DISPATCH_INFO.dispatchUrl;
+        return Grasscutter.getConfig().server.dispatch.dispatchUrl;
     }
 
     /**

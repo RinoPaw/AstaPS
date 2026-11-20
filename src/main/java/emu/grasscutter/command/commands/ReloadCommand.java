@@ -24,7 +24,7 @@ import picocli.CommandLine;
 public final class ReloadCommand implements CommandHandler {
     /** Single source of truth for the supported reload modules and their legacy execution order. */
     enum Module {
-        CONFIG("config", Grasscutter::loadConfig),
+        CONFIG("config", Grasscutter::reloadConfig),
         LANGUAGE("language", Grasscutter::loadLanguage),
         GACHA("gacha", () -> Grasscutter.getGameServer().getGachaSystem().load()),
         SHOP("shop", () -> Grasscutter.getGameServer().getShopSystem().load()),

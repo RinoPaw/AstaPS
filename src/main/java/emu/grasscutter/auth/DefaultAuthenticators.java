@@ -1,6 +1,5 @@
 package emu.grasscutter.auth;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -73,7 +72,7 @@ public final class DefaultAuthenticators {
 
             var requestData = request.getPasswordRequest();
             assert requestData != null; // This should never be null.
-            boolean useIntegrationPassword = ACCOUNT.useIntegrationPassword;
+            boolean useIntegrationPassword = Grasscutter.getConfig().account.useIntegrationPassword;
             if (useIntegrationPassword) {
                 // Rewrites requestData.account and requestData.password in place, and nulls both
                 // when the username box did not hold the "account&&password" form.
@@ -117,7 +116,7 @@ public final class DefaultAuthenticators {
             // The cost is that a mistyped username registers that typo rather than reporting a bad
             // login - unavoidable when the credential comes from one free-text box, and the reason
             // the password is checked below for names that already exist.
-            if (account == null && ACCOUNT.autoCreate) {
+            if (account == null && Grasscutter.getConfig().account.autoCreate) {
                 // This account has been created AUTOMATICALLY. There will be no permissions added.
                 account =
                         useIntegrationPassword
@@ -251,7 +250,7 @@ public final class DefaultAuthenticators {
             // Get account from database.
             Account account = DatabaseHelper.getAccountByName(requestData.account);
             // Check if account exists.
-            if (account == null && ACCOUNT.autoCreate) {
+            if (account == null && Grasscutter.getConfig().account.autoCreate) {
                 // This account has been created AUTOMATICALLY. There will be no permissions added.
                 if (decryptedPassword.length() >= 8) {
                     account = DatabaseHelper.createAccountWithUid(requestData.account, 0);

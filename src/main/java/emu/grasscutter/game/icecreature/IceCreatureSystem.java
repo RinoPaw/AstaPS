@@ -296,7 +296,7 @@ public final class IceCreatureSystem {
                 scene.broadcastPacket(new PacketLifeStateChangeNotify(gadget, LifeState.LIFE_DEAD));
                 scene.removeEntity(gadget, VisionType.VisionType_VISION_DIE);
                 int ticks = (int) Math.ceil(dieSeconds(gadget) * 1000d
-                        / Math.max(1, Configuration.GAME_INFO.tickRateMs));
+                        / Math.max(1, Grasscutter.getConfig().server.game.tickRateMs));
                 scene.getScheduler().scheduleDelayedTask(
                         () -> scene.broadcastPacket(
                                 new PacketSceneEntityDisappearNotify(gadget, VisionType.VisionType_VISION_REMOVE)),

@@ -1,6 +1,5 @@
 package emu.grasscutter.server;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.database.DatabaseManager;
@@ -35,7 +34,7 @@ public final class ServerWatchdog {
     public static void start() {
         if (!STARTED.compareAndSet(false, true)) return;
 
-        var options = GAME_INFO.watchdog;
+        var options = Grasscutter.getConfig().server.game.watchdog;
         if (!options.enableDatabaseMonitor && !options.enableAutoRestart) return;
 
         var config =

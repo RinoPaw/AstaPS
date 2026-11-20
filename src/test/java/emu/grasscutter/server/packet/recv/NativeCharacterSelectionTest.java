@@ -1,6 +1,5 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
@@ -40,10 +39,10 @@ final class NativeCharacterSelectionTest {
 
     @BeforeEach
     void useNativeSelectionWithoutStartingARegionServer() throws Exception {
-        previousIntro = GAME_OPTIONS.newAccountIntro;
+        previousIntro = Grasscutter.getConfig().server.game.gameOptions.newAccountIntro;
         previousRunModeOverride = (ServerRunMode) field(Grasscutter.class, "runModeOverride").get(null);
         previousRegionCache = field(PacketPlayerLoginRsp.class, "regionCache").get(null);
-        GAME_OPTIONS.newAccountIntro = new GameOptions.NewAccountIntro();
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro = new GameOptions.NewAccountIntro();
         Grasscutter.setRunModeOverride(ServerRunMode.GAME_ONLY);
         field(PacketPlayerLoginRsp.class, "regionCache")
                 .set(null, QueryCurrRegionHttpRsp.newBuilder()
@@ -52,7 +51,7 @@ final class NativeCharacterSelectionTest {
 
     @AfterEach
     void restoreConfiguration() throws Exception {
-        GAME_OPTIONS.newAccountIntro = previousIntro;
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro = previousIntro;
         Grasscutter.setRunModeOverride(previousRunModeOverride);
         field(PacketPlayerLoginRsp.class, "regionCache").set(null, previousRegionCache);
     }
@@ -103,7 +102,7 @@ final class NativeCharacterSelectionTest {
 
     @Test
     void freshAccountKeepsAnExplicitNotifyCmdIdOverride() throws Exception {
-        GAME_OPTIONS.newAccountIntro.doSetPlayerBornDataNotify = 12345;
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro.doSetPlayerBornDataNotify = 12345;
         var session = session(0);
 
         new HandlerPlayerLoginReq().handle(session, new byte[0], new byte[0]);

@@ -1,6 +1,5 @@
 package emu.grasscutter.server.http.console;
 
-import static emu.grasscutter.config.Configuration.HTTP_INFO;
 
 import com.google.gson.JsonParser;
 import emu.grasscutter.Grasscutter;
@@ -27,7 +26,7 @@ import java.util.Map;
 public final class WebConsoleHandler implements Router {
     private static final String TOKEN_HEADER = "X-Console-Token";
 
-    private final WebConsole options = HTTP_INFO.webConsole;
+    private final WebConsole options = Grasscutter.getConfig().server.http.webConsole;
     private final WebConsoleAuth auth = new WebConsoleAuth(options);
 
     @Override

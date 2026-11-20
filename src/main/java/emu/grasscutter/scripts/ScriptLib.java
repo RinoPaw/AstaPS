@@ -1160,7 +1160,7 @@ public class ScriptLib {
         logger.debug("[LUA] Call PlayCutScene with {} {}", cutsceneId, var2);
         var scriptManager = getSceneScriptManager();
         getCurrentGroup().ifPresent(group -> scriptManager.registerCutscene(cutsceneId, group.id));
-        if (emu.grasscutter.config.Configuration.GAME_OPTIONS.disableCutscenes) {
+        if (Grasscutter.getConfig().server.game.gameOptions.disableCutscenes) {
             logger.debug("Cutscene {} suppressed by game.disableCutscenes.", cutsceneId);
             scriptManager.finishCutscene(cutsceneId);
             return 0;

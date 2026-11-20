@@ -1,6 +1,5 @@
 package emu.grasscutter.server.game;
 
-import static emu.grasscutter.config.Configuration.*;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.Grasscutter;
@@ -79,7 +78,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
         this.state = SessionState.WAITING_FOR_TOKEN;
         this.lastPingTime = System.currentTimeMillis();
 
-        if (GAME_INFO.useUniquePacketKey) {
+        if (Grasscutter.getConfig().server.game.useUniquePacketKey) {
             this.encryptKey = new byte[4096];
             this.encryptSeed = Crypto.generateEncryptKeyAndSeed(this.encryptKey);
         }
@@ -146,7 +145,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
         // The last word on cutscenes. The two places that build one already check this, so nothing
         // should reach here - it is logged rather than dropped silently precisely so that a
         // cutscene the server did send stops being invisible.
-        if (GAME_OPTIONS.disableCutscenes
+        if (Grasscutter.getConfig().server.game.gameOptions.disableCutscenes
                 && packet.getOpcode() == PacketOpcodes.CutSceneBeginNotify) {
             Grasscutter.getLogger()
                     .info("Suppressed a CutSceneBeginNotify: game.disableCutscenes is on.");
@@ -251,7 +250,7 @@ public class GameSession implements GameSessionManager.KcpChannel {
         ByteBuf packet = Unpooled.wrappedBuffer(bytes);
 
         try {
-            boolean allDebug = GAME_INFO.logPackets == ServerDebugMode.ALL;
+            boolean allDebug = Grasscutter.getConfig().server.game.logPackets == ServerDebugMode.ALL;
             int prevOpcode = -1, prevHeaderLen = -1, prevPayloadLen = -1, prevStart = -1;
             while (packet.readableBytes() > 0) {
                 if (packet.readableBytes() < 12) {

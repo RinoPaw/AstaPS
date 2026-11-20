@@ -1,6 +1,6 @@
 package emu.grasscutter.game.mail;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.ServerResourceFixture;
@@ -30,14 +30,14 @@ final class BirthdayMailDailyResetTest {
 
     @BeforeEach
     void configureMail() {
-        originalOptions = GAME_OPTIONS.birthdayMail;
-        GAME_OPTIONS.birthdayMail = new BirthdayMailOptions();
+        originalOptions = Grasscutter.getConfig().server.game.gameOptions.birthdayMail;
+        Grasscutter.getConfig().server.game.gameOptions.birthdayMail = new BirthdayMailOptions();
         today = LocalDate.now(ZoneId.systemDefault());
     }
 
     @AfterEach
     void restoreMailOptions() {
-        GAME_OPTIONS.birthdayMail = originalOptions;
+        Grasscutter.getConfig().server.game.gameOptions.birthdayMail = originalOptions;
     }
 
     @Test
@@ -52,13 +52,13 @@ final class BirthdayMailDailyResetTest {
         assertEquals("Server", mail.mailContent.sender);
         assertFalse(mail.mailContent.title.isBlank());
         assertTrue(mail.mailContent.content.contains(player.getNickname()));
-        assertEquals(GAME_OPTIONS.birthdayMail.gifts.length, mail.itemList.size());
+        assertEquals(Grasscutter.getConfig().server.game.gameOptions.birthdayMail.gifts.length, mail.itemList.size());
         for (int index = 0; index < mail.itemList.size(); index++) {
-            var gift = GAME_OPTIONS.birthdayMail.gifts[index];
+            var gift = Grasscutter.getConfig().server.game.gameOptions.birthdayMail.gifts[index];
             assertEquals(gift.itemId, mail.itemList.get(index).itemId);
             assertEquals(gift.count, mail.itemList.get(index).itemCount);
         }
-        assertEquals(GAME_OPTIONS.birthdayMail.expireDays * 86400L,
+        assertEquals(Grasscutter.getConfig().server.game.gameOptions.birthdayMail.expireDays * 86400L,
                 mail.expireTime - mail.sendTime, 1L);
         assertEquals(today.getYear(), player.getLastBirthdayMailYear());
         assertEquals(1, player.saves);
@@ -158,7 +158,7 @@ final class BirthdayMailDailyResetTest {
     @Test
     void disabledBirthdayMailDoesNotSendWhileDailyResetStillCompletes() throws Exception {
         var player = playerWithBirthday(today);
-        GAME_OPTIONS.birthdayMail.enabled = false;
+        Grasscutter.getConfig().server.game.gameOptions.birthdayMail.enabled = false;
 
         doDailyReset(player);
 

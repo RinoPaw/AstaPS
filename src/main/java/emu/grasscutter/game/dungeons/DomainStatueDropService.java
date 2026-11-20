@@ -178,7 +178,7 @@ public final class DomainStatueDropService {
             debits = DomainClaimPaymentSnapshot.debits(
                     paymentMode, payableCostId,
                     payableCostCount,
-                    emu.grasscutter.config.Configuration.GAME_OPTIONS.resinOptions.resinUsage,
+                    Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage,
                     player.getResinBuyCount());
         } catch (RuntimeException invalid) {
             Grasscutter.getLogger().warn(

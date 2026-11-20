@@ -1,6 +1,5 @@
 package emu.grasscutter.game.managers.energy;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
@@ -57,7 +56,7 @@ public class EnergyManager extends BasePlayerManager {
     public EnergyManager(Player player) {
         super(player);
         this.avatarNormalProbabilities = new Object2IntOpenHashMap<>();
-        this.energyUsage = GAME_OPTIONS.energyUsage;
+        this.energyUsage = Grasscutter.getConfig().server.game.gameOptions.energyUsage;
     }
 
     public static void initialize() {
@@ -222,7 +221,7 @@ public class EnergyManager extends BasePlayerManager {
 
     private void handleBurstCast(Avatar avatar, int skillId) {
 
-        if (!GAME_OPTIONS.energyUsage || !this.energyUsage) {
+        if (!Grasscutter.getConfig().server.game.gameOptions.energyUsage || !this.energyUsage) {
             return;
         }
 
@@ -279,7 +278,7 @@ public class EnergyManager extends BasePlayerManager {
      * @return true if energy was consumed on this call
      */
     public boolean confirmBurstCast(Avatar avatar, int skillId) {
-        if (avatar == null || !GAME_OPTIONS.energyUsage || !this.energyUsage) {
+        if (avatar == null || !Grasscutter.getConfig().server.game.gameOptions.energyUsage || !this.energyUsage) {
             return false;
         }
 

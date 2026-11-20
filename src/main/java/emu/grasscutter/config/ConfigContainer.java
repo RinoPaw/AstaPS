@@ -80,17 +80,8 @@ public class ConfigContainer {
         if (existing == latest)
             return;
 
-        // Create a new configuration instance.
-        var updated = new ConfigContainer();
-        // Update all configuration fields.
-        var fields = ConfigContainer.class.getDeclaredFields();
-        Arrays.stream(fields).forEach(field -> {
-            try {
-                field.set(updated, field.get(config));
-            } catch (Exception exception) {
-                Grasscutter.getLogger().error("Failed to update a configuration field.", exception);
-            }
-        });
+        // Keep the original object untouched while preparing the updated configuration.
+        var updated = JsonUtils.decode(JsonUtils.toJson(config), ConfigContainer.class);
 
         updated.server.threadPools = mergeThreadPoolDefaults(updated.server.threadPools);
         updated.version = version();
@@ -140,7 +131,7 @@ public class ConfigContainer {
         public volatile Set<Integer> debugWhitelist = Set.of();
         public volatile Set<Integer> debugBlacklist = Set.of();
         public ServerRunMode runMode = ServerRunMode.HYBRID;
-        public boolean logCommands = false;
+        public volatile boolean logCommands = false;
 
         /**
          * If enabled, the 'require' Lua function will load the script's compiled varient into the context. (faster; doesn't work as well)
@@ -363,7 +354,7 @@ public class ConfigContainer {
         public String defaultName = "Grasscutter";
 
         /* Controls whether http requests should be logged in console or not */
-        public ServerDebugMode logRequests = ServerDebugMode.NONE;
+        public volatile ServerDebugMode logRequests = ServerDebugMode.NONE;
     }
 
     /** Debug settings applied by the --debug startup option. */

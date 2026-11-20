@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.protobuf.CodedInputStream;
@@ -51,10 +51,10 @@ final class NativeCharacterBirthTest {
 
     @BeforeEach
     void useMinimalTravelerResources() throws Exception {
-        previousIntro = GAME_OPTIONS.newAccountIntro;
-        previousQuesting = GAME_OPTIONS.questing.enabled;
-        GAME_OPTIONS.newAccountIntro = new GameOptions.NewAccountIntro();
-        GAME_OPTIONS.questing.enabled = true;
+        previousIntro = Grasscutter.getConfig().server.game.gameOptions.newAccountIntro;
+        previousQuesting = Grasscutter.getConfig().server.game.gameOptions.questing.enabled;
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro = new GameOptions.NewAccountIntro();
+        Grasscutter.getConfig().server.game.gameOptions.questing.enabled = true;
         isolate(GameData.getAvatarDataMap());
         isolate(GameData.getAvatarSkillDepotDataMap());
         addTraveler(10000005, 501, "PlayerBoy");
@@ -73,8 +73,8 @@ final class NativeCharacterBirthTest {
             resources.clear();
             resources.putAll(backup.getValue());
         }
-        GAME_OPTIONS.newAccountIntro = previousIntro;
-        GAME_OPTIONS.questing.enabled = previousQuesting;
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro = previousIntro;
+        Grasscutter.getConfig().server.game.gameOptions.questing.enabled = previousQuesting;
     }
 
     @ParameterizedTest
@@ -170,7 +170,7 @@ final class NativeCharacterBirthTest {
 
     @Test
     void successfulBirthPreservesAnExplicitResponseCmdIdOverride() throws Exception {
-        GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp = 12345;
+        Grasscutter.getConfig().server.game.gameOptions.newAccountIntro.setPlayerBornDataRsp = 12345;
         var session = session();
 
         handle(session, 10000007, "Lumine");

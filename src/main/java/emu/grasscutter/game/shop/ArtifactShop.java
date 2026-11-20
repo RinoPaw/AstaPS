@@ -1,6 +1,5 @@
 package emu.grasscutter.game.shop;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.config.ConfigContainer.GameOptions.ArtifactShopOptions;
@@ -89,7 +88,7 @@ public class ArtifactShop {
      * resources are loaded, so the first attempt finds no artifacts to list.
      */
     public void install(Int2ObjectMap<List<ShopInfo>> shopData) {
-        var options = GAME_OPTIONS.artifactShop;
+        var options = Grasscutter.getConfig().server.game.gameOptions.artifactShop;
         this.goods.clear();
         shopData.values().forEach(list -> list.removeIf(sold -> sold.getGoodsId() >= GOODS_ID_BASE));
         if (!options.enabled) return;
@@ -116,7 +115,7 @@ public class ArtifactShop {
 
     /** Rolls a piece the way a domain drop would, then levels it and applies the configured bias. */
     public GameItem roll(ItemData piece) {
-        var options = GAME_OPTIONS.artifactShop;
+        var options = Grasscutter.getConfig().server.game.gameOptions.artifactShop;
         var item = new GameItem(piece);
 
         // The main stat has to be settled first: a substat never repeats it.

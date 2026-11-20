@@ -1,5 +1,6 @@
 package emu.grasscutter.command;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.config.Configuration;
 import java.util.ArrayList;
 import java.util.List;
@@ -240,7 +241,7 @@ final class LegacyCommandSyntax {
             case "create" -> {
                 // Without real passwords the old third argument was the UID to reserve.
                 if (args.size() == 3
-                        && !Configuration.ACCOUNT.EXPERIMENTAL_RealPassword
+                        && !Grasscutter.getConfig().account.EXPERIMENTAL_RealPassword
                         && isDigits(args.get(2))) {
                     out.set(2, "@" + args.get(2));
                 } else if (args.size() == 4 && isDigits(args.get(3))) {

@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.send;
 
-import static emu.grasscutter.config.Configuration.INVENTORY_LIMITS;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.StoreTypeOuterClass.StoreType;
@@ -17,10 +17,10 @@ public class PacketStoreWeightLimitNotify extends BasePacket {
     public PacketStoreWeightLimitNotify() {
         super(PacketOpcodes.StoreWeightLimitNotify);
 
-        int relics = Math.max(1, INVENTORY_LIMITS.relics);
-        int materials = Math.max(1, INVENTORY_LIMITS.materials);
-        int furniture = Math.max(1, INVENTORY_LIMITS.furniture);
-        int all = Math.max(1, INVENTORY_LIMITS.all);
+        int relics = Math.max(1, Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.relics);
+        int materials = Math.max(1, Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.materials);
+        int furniture = Math.max(1, Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.furniture);
+        int all = Math.max(1, Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.all);
 
         StoreWeightLimitNotify p =
                 StoreWeightLimitNotify.newBuilder()

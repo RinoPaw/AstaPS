@@ -1,6 +1,6 @@
 package emu.grasscutter.game.tower;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,12 +50,12 @@ public final class TowerScheduleAvailabilityTest {
 
     @BeforeEach
     void prepareResources() {
-        originalScheduleId = GAME_OPTIONS.tower.scheduleId;
-        originalRotate = GAME_OPTIONS.tower.rotate;
-        originalSkipEntranceFloors = GAME_OPTIONS.tower.skipEntranceFloors;
-        GAME_OPTIONS.tower.scheduleId = SCHEDULE_ID;
-        GAME_OPTIONS.tower.rotate = false;
-        GAME_OPTIONS.tower.skipEntranceFloors = true;
+        originalScheduleId = Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId;
+        originalRotate = Grasscutter.getConfig().server.game.gameOptions.tower.rotate;
+        originalSkipEntranceFloors = Grasscutter.getConfig().server.game.gameOptions.tower.skipEntranceFloors;
+        Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId = SCHEDULE_ID;
+        Grasscutter.getConfig().server.game.gameOptions.tower.rotate = false;
+        Grasscutter.getConfig().server.game.gameOptions.tower.skipEntranceFloors = true;
         isolate(GameData.getTowerScheduleDataMap());
         isolate(GameData.getTowerFloorDataMap());
         isolate(GameData.getTowerLevelDataMap());
@@ -96,9 +96,9 @@ public final class TowerScheduleAvailabilityTest {
                     resources.clear();
                     ((Map) resources).putAll(original);
                 });
-        GAME_OPTIONS.tower.scheduleId = originalScheduleId;
-        GAME_OPTIONS.tower.rotate = originalRotate;
-        GAME_OPTIONS.tower.skipEntranceFloors = originalSkipEntranceFloors;
+        Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId = originalScheduleId;
+        Grasscutter.getConfig().server.game.gameOptions.tower.rotate = originalRotate;
+        Grasscutter.getConfig().server.game.gameOptions.tower.skipEntranceFloors = originalSkipEntranceFloors;
     }
 
     @ParameterizedTest
@@ -219,7 +219,7 @@ public final class TowerScheduleAvailabilityTest {
 
     @Test
     void playingEntranceFloorsStillRequiresSixStarsOnFloorEight() throws Exception {
-        GAME_OPTIONS.tower.skipEntranceFloors = false;
+        Grasscutter.getConfig().server.game.gameOptions.tower.skipEntranceFloors = false;
         var system = system(schedule("schedules"));
         var player = player(system);
         var data = player.getTowerData();

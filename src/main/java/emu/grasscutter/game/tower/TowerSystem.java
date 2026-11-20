@@ -1,6 +1,5 @@
 package emu.grasscutter.game.tower;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -157,7 +156,7 @@ public class TowerSystem extends BaseGameSystem {
      */
     private List<Integer> getRotationPool() {
         var all = getAllScheduleIds();
-        int pool = GAME_OPTIONS.tower.rotationPool;
+        int pool = Grasscutter.getConfig().server.game.gameOptions.tower.rotationPool;
         if (pool <= 0 || pool >= all.size()) return all;
         return all.subList(all.size() - pool, all.size());
     }
@@ -198,7 +197,7 @@ public class TowerSystem extends BaseGameSystem {
 
     /** Whether the rotation moves on its own, rather than staying on the newest playable one. */
     private static boolean isRotating() {
-        return GAME_OPTIONS.tower.scheduleId <= 0 && GAME_OPTIONS.tower.rotate;
+        return Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId <= 0 && Grasscutter.getConfig().server.game.gameOptions.tower.rotate;
     }
 
     public record ScheduleWindow(Date startTime, Date endTime) {}
@@ -235,7 +234,7 @@ public class TowerSystem extends BaseGameSystem {
 
     public TowerScheduleData getCurrentTowerScheduleData() {
         // A pinned id is served as asked, playable or not - that is what pinning is for.
-        int pinned = GAME_OPTIONS.tower.scheduleId;
+        int pinned = Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId;
         if (pinned > 0) {
             var data = GameData.getTowerScheduleDataMap().get(pinned);
             if (data != null) return data;

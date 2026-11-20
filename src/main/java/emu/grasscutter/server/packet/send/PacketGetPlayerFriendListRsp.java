@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.send;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.config.ConfigContainer.ConsoleAccount;
@@ -20,7 +20,7 @@ public class PacketGetPlayerFriendListRsp extends BasePacket {
 
         GetPlayerFriendListRsp.Builder proto = GetPlayerFriendListRsp.newBuilder();
         // Both are added, neither replaces the other: Chiori and DPS.
-        proto.addFriendList(buildBotFriend(GameConstants.SERVER_CONSOLE_UID, GAME_INFO.serverAccount));
+        proto.addFriendList(buildBotFriend(GameConstants.SERVER_CONSOLE_UID, Grasscutter.getConfig().server.game.serverAccount));
         proto.addFriendList(buildBotFriend(GameConstants.SERVER_DPS_UID, resolveDpsAccount()));
 
         for (Friendship friendship : player.getFriendsList().getFriends().values()) {
@@ -33,8 +33,8 @@ public class PacketGetPlayerFriendListRsp extends BasePacket {
 
     private static ConsoleAccount resolveDpsAccount() {
         try {
-            var field = GAME_INFO.getClass().getField("dpsAccount");
-            Object value = field.get(GAME_INFO);
+            var field = Grasscutter.getConfig().server.game.getClass().getField("dpsAccount");
+            Object value = field.get(Grasscutter.getConfig().server.game);
             if (value instanceof ConsoleAccount account) {
                 return account;
             }
@@ -45,9 +45,9 @@ public class PacketGetPlayerFriendListRsp extends BasePacket {
         fallback.signature = "Send dps30 to start, dpsstop to end early";
         fallback.adventureRank = 60;
         fallback.avatarId =
-                GAME_INFO.serverAccount != null ? GAME_INFO.serverAccount.avatarId : 10000007;
+                Grasscutter.getConfig().server.game.serverAccount != null ? Grasscutter.getConfig().server.game.serverAccount.avatarId : 10000007;
         fallback.nameCardId =
-                GAME_INFO.serverAccount != null ? GAME_INFO.serverAccount.nameCardId : 210001;
+                Grasscutter.getConfig().server.game.serverAccount != null ? Grasscutter.getConfig().server.game.serverAccount.nameCardId : 210001;
         return fallback;
     }
 

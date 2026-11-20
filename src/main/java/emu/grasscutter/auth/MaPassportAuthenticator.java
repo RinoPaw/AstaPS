@@ -42,7 +42,7 @@ public class MaPassportAuthenticator {
             }
 
             Account account = DatabaseHelper.getAccountByName(username);
-            if (account == null && emu.grasscutter.config.Configuration.ACCOUNT.autoCreate) {
+            if (account == null && Grasscutter.getConfig().account.autoCreate) {
                 account = DatabaseHelper.createAccountWithUid(username, 0);
                 Grasscutter.getLogger().info("Auto-created account for: " + username);
             }

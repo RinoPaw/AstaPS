@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.send;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
@@ -20,13 +20,13 @@ final class PacketGetSceneAreaRspTest {
 
     @BeforeEach
     void enableFog() {
-        previousFogEnabled = GAME_OPTIONS.mapFogEnabled;
-        GAME_OPTIONS.mapFogEnabled = true;
+        previousFogEnabled = Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled;
+        Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled = true;
     }
 
     @AfterEach
     void restoreFog() {
-        GAME_OPTIONS.mapFogEnabled = previousFogEnabled;
+        Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled = previousFogEnabled;
     }
 
     @Test
@@ -96,7 +96,7 @@ final class PacketGetSceneAreaRspTest {
     void disablingFogStillShowsAllAreasWithStatueLocked() throws Exception {
         var player = new Player();
         player.getUnlockedSceneAreas(3).add(1);
-        GAME_OPTIONS.mapFogEnabled = false;
+        Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled = false;
         var areas = GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData());
         assertEquals(1000, areas.getAreaIdListCount());
         assertFalse(player.getUnlockedScenePoints(3).contains(7));
@@ -110,7 +110,7 @@ final class PacketGetSceneAreaRspTest {
         player.getUnlockedScenePoints(3).add(7);
 
         for (boolean enabled : new boolean[] {true, false, true, false, true}) {
-            GAME_OPTIONS.mapFogEnabled = enabled;
+            Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled = enabled;
 
             var areas = GetSceneAreaRsp.parseFrom(
                     new PacketGetSceneAreaRsp(player, 3).getData());

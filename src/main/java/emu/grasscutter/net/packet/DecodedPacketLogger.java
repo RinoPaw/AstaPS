@@ -1,7 +1,5 @@
 package emu.grasscutter.net.packet;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -34,7 +32,7 @@ public final class DecodedPacketLogger {
         String handlerLabel = handler == null ? "" : " via " + handler.getClass().getSimpleName();
         Grasscutter.getLogger().info("{}: {} ({}){}", direction, name, opcode, handlerLabel);
 
-        if (GAME_INFO.isShowPacketPayload) {
+        if (Grasscutter.getConfig().server.game.isShowPacketPayload) {
             Grasscutter.getLogger().info("{}", formatPayload(opcode, payload, handler));
         }
     }
@@ -93,11 +91,11 @@ public final class DecodedPacketLogger {
         if (PacketOpcodes.BANNED_PACKETS.contains(opcode)) {
             return false;
         }
-        return switch (GAME_INFO.logPackets) {
+        return switch (Grasscutter.getConfig().server.game.logPackets) {
             case ALL -> !PacketOpcodesUtils.LOOP_PACKETS.contains(opcode)
-                    || GAME_INFO.isShowLoopPackets;
-            case WHITELIST -> SERVER.debugWhitelist.contains(opcode);
-            case BLACKLIST -> !SERVER.debugBlacklist.contains(opcode);
+                    || Grasscutter.getConfig().server.game.isShowLoopPackets;
+            case WHITELIST -> Grasscutter.getConfig().server.debugWhitelist.contains(opcode);
+            case BLACKLIST -> !Grasscutter.getConfig().server.debugBlacklist.contains(opcode);
             default -> false;
         };
     }

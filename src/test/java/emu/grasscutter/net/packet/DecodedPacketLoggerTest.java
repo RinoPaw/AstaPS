@@ -1,7 +1,6 @@
 package emu.grasscutter.net.packet;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,32 +39,32 @@ final class DecodedPacketLoggerTest {
 
     @Test
     void packetLoggingFiltersStillApplyToUnrecognizedOpcodes() {
-        var oldMode = GAME_INFO.logPackets;
-        var oldLoops = GAME_INFO.isShowLoopPackets;
-        var oldWhitelist = SERVER.debugWhitelist;
-        var oldBlacklist = SERVER.debugBlacklist;
+        var oldMode = Grasscutter.getConfig().server.game.logPackets;
+        var oldLoops = Grasscutter.getConfig().server.game.isShowLoopPackets;
+        var oldWhitelist = Grasscutter.getConfig().server.debugWhitelist;
+        var oldBlacklist = Grasscutter.getConfig().server.debugBlacklist;
         try {
-            GAME_INFO.isShowLoopPackets = false;
-            GAME_INFO.logPackets = ServerDebugMode.ALL;
+            Grasscutter.getConfig().server.game.isShowLoopPackets = false;
+            Grasscutter.getConfig().server.game.logPackets = ServerDebugMode.ALL;
             assertTrue(DecodedPacketLogger.shouldDump(987654));
             assertFalse(DecodedPacketLogger.shouldDump(PacketOpcodes.PingReq));
             assertFalse(DecodedPacketLogger.shouldDump(
                     PacketOpcodes.WorldOwnerBlossomScheduleInfoNotify));
 
-            SERVER.debugWhitelist = Set.of(987654);
-            GAME_INFO.logPackets = ServerDebugMode.WHITELIST;
+            Grasscutter.getConfig().server.debugWhitelist = Set.of(987654);
+            Grasscutter.getConfig().server.game.logPackets = ServerDebugMode.WHITELIST;
             assertTrue(DecodedPacketLogger.shouldDump(987654));
             assertFalse(DecodedPacketLogger.shouldDump(123456));
 
-            SERVER.debugBlacklist = Set.of(987654);
-            GAME_INFO.logPackets = ServerDebugMode.BLACKLIST;
+            Grasscutter.getConfig().server.debugBlacklist = Set.of(987654);
+            Grasscutter.getConfig().server.game.logPackets = ServerDebugMode.BLACKLIST;
             assertFalse(DecodedPacketLogger.shouldDump(987654));
             assertTrue(DecodedPacketLogger.shouldDump(123456));
         } finally {
-            GAME_INFO.logPackets = oldMode;
-            GAME_INFO.isShowLoopPackets = oldLoops;
-            SERVER.debugWhitelist = oldWhitelist;
-            SERVER.debugBlacklist = oldBlacklist;
+            Grasscutter.getConfig().server.game.logPackets = oldMode;
+            Grasscutter.getConfig().server.game.isShowLoopPackets = oldLoops;
+            Grasscutter.getConfig().server.debugWhitelist = oldWhitelist;
+            Grasscutter.getConfig().server.debugBlacklist = oldBlacklist;
         }
     }
 }

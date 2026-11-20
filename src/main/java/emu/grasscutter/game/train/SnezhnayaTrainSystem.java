@@ -184,7 +184,7 @@ public final class SnezhnayaTrainSystem {
     private static void startBroadcast(Player player, TrainState train) {
         Scene scene = player.getScene();
         if (scene == null || train.taskId >= 0) return;
-        int ticks = Math.max(1, BROADCAST_MS / Math.max(1, Configuration.GAME_INFO.tickRateMs));
+        int ticks = Math.max(1, BROADCAST_MS / Math.max(1, Grasscutter.getConfig().server.game.tickRateMs));
         train.taskId = scene.getScheduler().scheduleRepeatingTask(() -> {
             synchronized (train) {
                 if (!player.isOnline() || player.getScene() != scene

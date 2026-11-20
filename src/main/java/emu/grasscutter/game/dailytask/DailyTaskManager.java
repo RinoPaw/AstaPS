@@ -909,7 +909,7 @@ public class DailyTaskManager {
 										WAVE_RECOVERY_DELAY_MS
 												/ (double) Math.max(
 														1,
-														emu.grasscutter.config.Configuration.GAME_INFO.tickRateMs))));
+														Grasscutter.getConfig().server.game.tickRateMs))));
 	}
 
 	private boolean hasLivingMonsterForTask(

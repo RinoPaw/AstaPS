@@ -1,6 +1,5 @@
 package emu.grasscutter.database;
 
-import static emu.grasscutter.config.Configuration.DATABASE;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.inc;
 import static com.mongodb.client.model.Updates.max;
@@ -41,7 +40,7 @@ public final class DatabaseManager {
 
     public static void initialize() {
         // Initialize
-        MongoClient gameMongoClient = MongoClients.create(DATABASE.game.connectionUri);
+        MongoClient gameMongoClient = MongoClients.create(Grasscutter.getConfig().databaseInfo.game.connectionUri);
 
         // Set mapper options.
         MapperOptions mapperOptions =
@@ -49,7 +48,7 @@ public final class DatabaseManager {
 
         // Create data store.
         gameDatastore =
-                Morphia.createDatastore(gameMongoClient, DATABASE.game.collection, mapperOptions);
+                Morphia.createDatastore(gameMongoClient, Grasscutter.getConfig().databaseInfo.game.collection, mapperOptions);
 
         // Map classes.
         var entities =
@@ -67,10 +66,10 @@ public final class DatabaseManager {
         ensureIndexes(gameDatastore);
 
         if (Grasscutter.getRunMode() != ServerRunMode.HYBRID) {
-            MongoClient dispatchMongoClient = MongoClients.create(DATABASE.server.connectionUri);
+            MongoClient dispatchMongoClient = MongoClients.create(Grasscutter.getConfig().databaseInfo.server.connectionUri);
 
             dispatchDatastore =
-                    Morphia.createDatastore(dispatchMongoClient, DATABASE.server.collection, mapperOptions);
+                    Morphia.createDatastore(dispatchMongoClient, Grasscutter.getConfig().databaseInfo.server.collection, mapperOptions);
             dispatchDatastore.getMapper().map(new Class<?>[] {DatabaseCounter.class, Account.class});
 
             // Ensure indexes for dispatch datastore

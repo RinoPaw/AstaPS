@@ -1,6 +1,5 @@
 package emu.grasscutter.game.inventory;
 
-import static emu.grasscutter.config.Configuration.INVENTORY_LIMITS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
@@ -43,13 +42,13 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
         this.store = new Long2ObjectOpenHashMap<>();
         this.inventoryTypes = new Int2ObjectOpenHashMap<>();
 
-        this.createInventoryTab(ItemType.ITEM_WEAPON, new EquipInventoryTab(INVENTORY_LIMITS.weapons));
+        this.createInventoryTab(ItemType.ITEM_WEAPON, new EquipInventoryTab(Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.weapons));
         this.createInventoryTab(
-                ItemType.ITEM_RELIQUARY, new EquipInventoryTab(INVENTORY_LIMITS.relics));
+                ItemType.ITEM_RELIQUARY, new EquipInventoryTab(Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.relics));
         this.createInventoryTab(
-                ItemType.ITEM_MATERIAL, new MaterialInventoryTab(INVENTORY_LIMITS.materials));
+                ItemType.ITEM_MATERIAL, new MaterialInventoryTab(Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.materials));
         this.createInventoryTab(
-                ItemType.ITEM_FURNITURE, new MaterialInventoryTab(INVENTORY_LIMITS.furniture));
+                ItemType.ITEM_FURNITURE, new MaterialInventoryTab(Grasscutter.getConfig().server.game.gameOptions.inventoryLimits.furniture));
         this.createInventoryTab(
                 ItemType.ITEM_TPS_WEAPON, new EquipInventoryTab(TpsWeaponSystem.TPS_WEAPON_ITEM_LIMIT));
     }

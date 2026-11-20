@@ -1,5 +1,6 @@
 package emu.grasscutter.game.quest;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.data.binout.routes.RoutePoint;
 import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
@@ -37,7 +38,7 @@ public final class LiyueCloudDungeonSupport {
 
     public static int ticksForSeconds(double seconds) {
         return Math.max(1, (int) Math.ceil(Math.max(0, seconds) * 1000
-                / Math.max(1, Configuration.GAME_INFO.tickRateMs)));
+                / Math.max(1, Grasscutter.getConfig().server.game.tickRateMs)));
     }
 
     public static boolean isPlatform(EntityGadget gadget) {

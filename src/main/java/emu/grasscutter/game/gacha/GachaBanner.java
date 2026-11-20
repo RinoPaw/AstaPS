@@ -340,22 +340,22 @@ public class GachaBanner {
 
         String record =
                 "http"
-                        + (HTTP_ENCRYPTION.useInRouting ? "s" : "")
+                        + (Grasscutter.getConfig().server.http.encryption.useInRouting ? "s" : "")
                         + "://"
-                        + lr(HTTP_INFO.accessAddress, HTTP_INFO.bindAddress)
+                        + lr(Grasscutter.getConfig().server.http.accessAddress, Grasscutter.getConfig().server.http.bindAddress)
                         + ":"
-                        + lr(HTTP_INFO.accessPort, HTTP_INFO.bindPort)
+                        + lr(Grasscutter.getConfig().server.http.accessPort, Grasscutter.getConfig().server.http.bindPort)
                         + "/gacha?s="
                         + sessionKey
                         + "&gachaType="
                         + gachaType;
         String details =
                 "http"
-                        + (HTTP_ENCRYPTION.useInRouting ? "s" : "")
+                        + (Grasscutter.getConfig().server.http.encryption.useInRouting ? "s" : "")
                         + "://"
-                        + lr(HTTP_INFO.accessAddress, HTTP_INFO.bindAddress)
+                        + lr(Grasscutter.getConfig().server.http.accessAddress, Grasscutter.getConfig().server.http.bindAddress)
                         + ":"
-                        + lr(HTTP_INFO.accessPort, HTTP_INFO.bindPort)
+                        + lr(Grasscutter.getConfig().server.http.accessPort, Grasscutter.getConfig().server.http.bindPort)
                         + "/gacha/details?s="
                         + sessionKey
                         + "&scheduleId="

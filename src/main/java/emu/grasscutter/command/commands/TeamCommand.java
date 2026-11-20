@@ -1,6 +1,6 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.command.*;
 import emu.grasscutter.data.GameData;
@@ -108,11 +108,11 @@ public final class TeamCommand implements CommandHandler {
                     targetPlayer.getTeamManager().getCurrentTeamInfo().getAvatars();
 
             if (currentTeamAvatars.size() + avatarIds.length
-                    > GAME_OPTIONS.avatarLimits.singlePlayerTeam) {
+                    > Grasscutter.getConfig().server.game.gameOptions.avatarLimits.singlePlayerTeam) {
                 CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.team.add_too_much",
-                        GAME_OPTIONS.avatarLimits.singlePlayerTeam);
+                        Grasscutter.getConfig().server.game.gameOptions.avatarLimits.singlePlayerTeam);
                 return false;
             }
 

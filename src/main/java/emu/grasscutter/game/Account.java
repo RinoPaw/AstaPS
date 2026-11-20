@@ -1,6 +1,5 @@
 package emu.grasscutter.game;
 
-import static emu.grasscutter.config.Configuration.*;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import dev.morphia.annotations.*;
@@ -47,7 +46,7 @@ public class Account {
     @Deprecated
     public Account() {
         this.permissions = new ArrayList<>();
-        this.locale = LANGUAGE;
+        this.locale = Grasscutter.getConfig().language.language;
     }
 
     public static boolean permissionMatchesWildcard(String wildcard, String[] permissionParts) {
@@ -263,7 +262,7 @@ public class Account {
 
         // Add default permissions if it doesn't exist
         List<String> permissions =
-                Stream.of(this.permissions, Arrays.asList(ACCOUNT.defaultPermissions))
+                Stream.of(this.permissions, Arrays.asList(Grasscutter.getConfig().account.defaultPermissions))
                         .flatMap(Collection::stream)
                         .distinct()
                         .toList();
@@ -320,10 +319,10 @@ public class Account {
     @PreLoad
     public void onLoad(Document document) {
         // Missing permissions on legacy documents must not imply administrator access.
-        // Only explicitly stored grants and configured ACCOUNT.defaultPermissions apply.
+        // Only explicitly stored grants and configured default permissions apply.
         // Set account default language as server default language
         if (!document.containsKey("locale")) {
-            this.locale = LANGUAGE;
+            this.locale = Grasscutter.getConfig().language.language;
         }
     }
 

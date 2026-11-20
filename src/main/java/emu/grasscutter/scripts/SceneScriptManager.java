@@ -1615,7 +1615,7 @@ public class SceneScriptManager {
 
         // Lua passes seconds; the scene scheduler counts ticks and stops while the scene is paused.
         int ticks =
-                Math.max(1, (int) Math.ceil(time * 1000d / Math.max(1, Configuration.GAME_INFO.tickRateMs)));
+                Math.max(1, (int) Math.ceil(time * 1000d / Math.max(1, Grasscutter.getConfig().server.game.tickRateMs)));
         synchronized (this) {
             cancelGroupTimerEvent(groupID, source);
             var timers = activeGroupTimers.computeIfAbsent(groupID, k -> new HashSet<>());

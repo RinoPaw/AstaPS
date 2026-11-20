@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 public class StaminaManager extends BasePlayerManager {
 
@@ -308,7 +307,7 @@ public class StaminaManager extends BasePlayerManager {
     // Returns new stamina and sends PlayerPropNotify or VehicleStaminaNotify
     public int setStamina(GameSession session, String reason, int newStamina, boolean isCharacterStamina) {
         // Target Player
-        if (!GAME_OPTIONS.staminaUsage || session.getPlayer().isUnlimitedStamina()) {
+        if (!Grasscutter.getConfig().server.game.gameOptions.staminaUsage || session.getPlayer().isUnlimitedStamina()) {
             newStamina = getMaxCharacterStamina();
         }
 

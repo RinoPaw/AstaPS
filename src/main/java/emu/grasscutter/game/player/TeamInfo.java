@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.game.avatar.Avatar;
@@ -14,7 +14,7 @@ public final class TeamInfo {
 
     public TeamInfo() {
         this.name = "";
-        this.avatars = new ArrayList<>(GAME_OPTIONS.avatarLimits.singlePlayerTeam);
+        this.avatars = new ArrayList<>(Grasscutter.getConfig().server.game.gameOptions.avatarLimits.singlePlayerTeam);
     }
 
     public TeamInfo(List<Integer> avatars) {
@@ -63,7 +63,7 @@ public final class TeamInfo {
     }
 
     public void copyFrom(TeamInfo team) {
-        copyFrom(team, GAME_OPTIONS.avatarLimits.singlePlayerTeam);
+        copyFrom(team, Grasscutter.getConfig().server.game.gameOptions.avatarLimits.singlePlayerTeam);
     }
 
     public void copyFrom(TeamInfo team, int maxTeamSize) {

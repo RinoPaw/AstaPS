@@ -1,9 +1,9 @@
 package emu.grasscutter;
 
-import static emu.grasscutter.config.Configuration.SERVER;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import ch.qos.logback.classic.*;
+import com.google.gson.JsonElement;
 import emu.grasscutter.auth.*;
 import emu.grasscutter.command.*;
 import emu.grasscutter.config.ConfigContainer;
@@ -28,6 +28,9 @@ import java.time.Duration;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Objects;
 import emu.grasscutter.server.threading.ManagedScheduledThreadPoolExecutor;
 import emu.grasscutter.server.threading.ServerHealthSnapshot;
 import emu.grasscutter.server.threading.ServerRuntimeSnapshot;
@@ -59,7 +62,8 @@ public final class Grasscutter {
                                             .excludePackage("emu.grasscutter.net.proto")));
     @Getter private static final Logger logger = (Logger) LoggerFactory.getLogger(Grasscutter.class);
 
-    @Getter public static ConfigContainer config;
+    @Getter public static volatile ConfigContainer config;
+    static volatile JsonElement loadedConfigSnapshot;
 
     @Getter @Setter private static Language language;
     @Getter @Setter private static String preferredLanguage;
@@ -298,11 +302,75 @@ public final class Grasscutter {
         // If the file already exists, we attempt to load it.
         try {
             config = JsonUtils.loadToClass(configFile.toPath(), ConfigContainer.class);
+            loadedConfigSnapshot = JsonUtils.toJson(config);
         } catch (Exception exception) {
             getLogger()
                     .error(
                             "There was an error while trying to load the configuration from config.json. Please make sure that there are no syntax errors. If you want to start with a default configuration, delete your existing config.json.");
             System.exit(1);
+        }
+    }
+
+    private static final Set<String> LIVE_CONFIG_FIELDS = Set.of(
+            "server.logCommands", "server.debugWhitelist", "server.debugBlacklist",
+            "server.game.logPackets", "server.game.isShowPacketPayload",
+            "server.game.isShowLoopPackets", "server.dispatch.logRequests");
+
+    /** Reload logging settings without replacing constructed server components. */
+    public static void reloadConfig() {
+        try {
+            applyConfigReload(JsonUtils.loadToClass(configFile.toPath(), ConfigContainer.class));
+        } catch (IOException error) {
+            throw new UncheckedIOException("Unable to read config.json", error);
+        }
+    }
+
+    static synchronized void applyConfigReload(ConfigContainer updated) {
+        if (updated == null || updated.server == null
+                || updated.server.game == null || updated.server.dispatch == null) {
+            throw new IllegalArgumentException("Invalid config.json: missing server configuration");
+        }
+        if (updated.server.debugWhitelist == null || updated.server.debugBlacklist == null
+                || updated.server.game.logPackets == null
+                || updated.server.dispatch.logRequests == null) {
+            throw new IllegalArgumentException("Invalid config.json: missing logging settings");
+        }
+
+        var changed = new TreeSet<String>();
+        changedConfigFields(loadedConfigSnapshot, JsonUtils.toJson(updated), "", changed);
+        changed.removeAll(LIVE_CONFIG_FIELDS);
+        if (!changed.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Restart required for configuration changes: " + String.join(", ", changed));
+        }
+
+        var current = config.server;
+        var next = updated.server;
+        current.logCommands = next.logCommands;
+        current.debugWhitelist = next.debugWhitelist;
+        current.debugBlacklist = next.debugBlacklist;
+        current.game.logPackets = next.game.logPackets;
+        current.game.isShowPacketPayload = next.game.isShowPacketPayload;
+        current.game.isShowLoopPackets = next.game.isShowLoopPackets;
+        current.dispatch.logRequests = next.dispatch.logRequests;
+        loadedConfigSnapshot = JsonUtils.toJson(updated);
+    }
+
+    private static void changedConfigFields(
+            JsonElement before, JsonElement after, String path, Set<String> changed) {
+        if (Objects.equals(before, after)) return;
+        if (before != null && after != null
+                && before.isJsonObject() && after.isJsonObject()) {
+            var keys = new TreeSet<>(before.getAsJsonObject().keySet());
+            keys.addAll(after.getAsJsonObject().keySet());
+            for (String key : keys) {
+                changedConfigFields(
+                        before.getAsJsonObject().get(key),
+                        after.getAsJsonObject().get(key),
+                        path.isEmpty() ? key : path + "." + key, changed);
+            }
+        } else {
+            changed.add(path);
         }
     }
 
@@ -316,6 +384,7 @@ public final class Grasscutter {
 
         try (FileWriter file = new FileWriter(configFile)) {
             file.write(JsonUtils.encode(config));
+            loadedConfigSnapshot = JsonUtils.toJson(config);
         } catch (IOException ignored) {
             logger.error("Unable to write to config file.");
         } catch (Exception e) {
@@ -332,7 +401,7 @@ public final class Grasscutter {
     }
 
     public static ServerRunMode getRunMode() {
-        return Grasscutter.runModeOverride != null ? Grasscutter.runModeOverride : SERVER.runMode;
+        return Grasscutter.runModeOverride != null ? Grasscutter.runModeOverride : Grasscutter.getConfig().server.runMode;
     }
 
     /** The Shell owns the line editor; it is unavailable before startup or after exit. */

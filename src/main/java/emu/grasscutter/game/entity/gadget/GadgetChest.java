@@ -365,14 +365,14 @@ public class GadgetChest extends GadgetContent {
                         + "." + bossClaimOperationId);
         var intended = items.stream().map(item -> new RewardGrantJournal.Reward(
                 item.getItemId(), item.getCount(), item.getLevel())).toList();
-        var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage
+        var debits = Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage
                 ? List.of(new RewardGrantJournal.Debit(106, resinCost)) : List.<RewardGrantJournal.Debit>of();
         var result = player.getInventory().addItems(
                 items, ActionReason.OpenWorldBossChest,
                 emu.grasscutter.game.inventory.InventoryAddPolicy.ALL_OR_NOTHING,
                 () -> {
                     if (!canClaimBossFlower(player)
-                            || (Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                            || (Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage
                                     && player.getProperty(PlayerProperty.PROP_PLAYER_RESIN) < resinCost)
                             || !journal.prepare(receipt, intended, debits)) {
                         return false;

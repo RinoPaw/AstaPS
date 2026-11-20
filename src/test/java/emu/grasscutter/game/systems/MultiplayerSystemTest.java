@@ -1,6 +1,6 @@
 package emu.grasscutter.game.systems;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static emu.grasscutter.game.systems.TestPlayers.server;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +27,7 @@ public final class MultiplayerSystemTest {
 
     @BeforeEach
     void setup() {
-        oldCapacity = GAME_OPTIONS.avatarLimits.multiplayerTeam;
+        oldCapacity = Grasscutter.getConfig().server.game.gameOptions.avatarLimits.multiplayerTeam;
         server = server();
         system = server.getMultiplayerSystem();
         host = new TestPlayer(server, 100);
@@ -39,7 +39,7 @@ public final class MultiplayerSystemTest {
 
     @AfterEach
     void restore() {
-        GAME_OPTIONS.avatarLimits.multiplayerTeam = oldCapacity;
+        Grasscutter.getConfig().server.game.gameOptions.avatarLimits.multiplayerTeam = oldCapacity;
     }
 
     @Test
@@ -85,7 +85,7 @@ public final class MultiplayerSystemTest {
         system.applyEnterMp(guest, host.getUid());
         assertTrue(host.getCoopRequests().isEmpty());
 
-        GAME_OPTIONS.avatarLimits.multiplayerTeam = 2;
+        Grasscutter.getConfig().server.game.gameOptions.avatarLimits.multiplayerTeam = 2;
         system.applyEnterMp(outsider, host.getUid());
         assertTrue(host.getCoopRequests().isEmpty());
         assertEquals(2, outsider.sent.size());
@@ -101,7 +101,7 @@ public final class MultiplayerSystemTest {
 
     @Test
     void refusedReplyConsumesTheRequest() {
-        GAME_OPTIONS.avatarLimits.multiplayerTeam = 2;
+        Grasscutter.getConfig().server.game.gameOptions.avatarLimits.multiplayerTeam = 2;
         host.getCoopRequests().put(outsider.getUid(), new CoopRequest(outsider));
 
         system.applyEnterMpReply(host, outsider.getUid(), true);

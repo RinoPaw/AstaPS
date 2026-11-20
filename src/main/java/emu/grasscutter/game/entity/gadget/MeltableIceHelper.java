@@ -40,7 +40,7 @@ public final class MeltableIceHelper {
 
         int groupId = gadget.getGroupId();
         int blockId = gadget.getBlockId();
-        int tickRateMs = Math.max(1, Configuration.GAME_INFO.tickRateMs);
+        int tickRateMs = Math.max(1, Grasscutter.getConfig().server.game.tickRateMs);
         int ticks = (int) Math.ceil(REFREEZE_SECONDS * 1000d / tickRateMs);
 
         scene.getScheduler()

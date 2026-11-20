@@ -1,6 +1,5 @@
 package emu.grasscutter.server.dispatch;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
 
 import com.google.gson.*;
 import emu.grasscutter.Grasscutter;
@@ -161,7 +160,7 @@ public final class DispatchClient extends WebSocketClient implements IDispatcher
         // Serialize the message into JSON.
         var serialized = JSON.toJson(serverMessage).getBytes(StandardCharsets.UTF_8);
         // Encrypt the message.
-        Crypto.xor(serialized, DISPATCH_INFO.encryptionKey);
+        Crypto.xor(serialized, Grasscutter.getConfig().server.dispatch.encryptionKey);
         // Send the message.
         this.send(serialized);
     }
@@ -169,7 +168,7 @@ public final class DispatchClient extends WebSocketClient implements IDispatcher
     @Override
     public void onOpen(ServerHandshake handshake) {
         // Attempt to handshake with the server.
-        this.sendMessage(PacketIds.LoginNotify, DISPATCH_INFO.dispatchKey);
+        this.sendMessage(PacketIds.LoginNotify, Grasscutter.getConfig().server.dispatch.dispatchKey);
 
         this.getLogger().info("Dispatch connection opened.");
     }

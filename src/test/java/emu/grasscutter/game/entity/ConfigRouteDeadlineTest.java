@@ -1,5 +1,6 @@
 package emu.grasscutter.game.entity;
 
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import emu.grasscutter.config.Configuration;
@@ -197,7 +198,7 @@ class ConfigRouteDeadlineTest {
             var group = new SceneGroup();
             group.id = 133003174;
             lib.setCurrentGroup(group);
-            Configuration.GAME_INFO.tickRateMs = rate;
+            Grasscutter.getConfig().server.game.tickRateMs = rate;
         }
 
         List<Integer> ids() {

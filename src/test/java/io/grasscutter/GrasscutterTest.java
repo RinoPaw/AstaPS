@@ -49,8 +49,8 @@ public final class GrasscutterTest {
         }
 
         // Set the ports.
-        GrasscutterTest.httpPort = Configuration.SERVER.http.bindPort;
-        GrasscutterTest.gamePort = Configuration.SERVER.game.bindPort;
+        GrasscutterTest.httpPort = Grasscutter.getConfig().server.http.bindPort;
+        GrasscutterTest.gamePort = Grasscutter.getConfig().server.game.bindPort;
     }
 
     @Test

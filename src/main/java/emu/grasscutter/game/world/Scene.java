@@ -817,7 +817,7 @@ public class Scene {
 
         if (seconds <= 0d) return;
 
-        int tickRateMs = Math.max(1, emu.grasscutter.config.Configuration.GAME_INFO.tickRateMs);
+        int tickRateMs = Math.max(1, Grasscutter.getConfig().server.game.tickRateMs);
         int ticks = (int) Math.ceil(seconds * 1000d / tickRateMs);
         this.scheduler.scheduleDelayedTask(
             () -> this.broadcastPacket(

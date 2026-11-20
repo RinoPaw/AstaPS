@@ -1,6 +1,6 @@
 package emu.grasscutter.server.game;
 
-import static emu.grasscutter.config.Configuration.*;
+import emu.grasscutter.Grasscutter;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.*;
@@ -100,7 +100,7 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
      */
     @SneakyThrows
     public static URI getDispatchUrl() {
-        return new URI(DISPATCH_INFO.dispatchUrl);
+        return new URI(Grasscutter.getConfig().server.dispatch.dispatchUrl);
     }
 
     public GameServer() {
@@ -141,7 +141,7 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
         }
 
         var channelConfig = new ChannelConfig();
-        channelConfig.nodelay(true, GAME_INFO.kcpInterval, 2, true);
+        channelConfig.nodelay(true, Grasscutter.getConfig().server.game.kcpInterval, 2, true);
         channelConfig.setMtu(1400);
         channelConfig.setSndwnd(256);
         channelConfig.setRcvwnd(256);
@@ -196,10 +196,10 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
 
     private static InetSocketAddress getAdapterInetSocketAddress() {
         InetSocketAddress inetSocketAddress;
-        if (GAME_INFO.bindAddress.equals("")) {
-            inetSocketAddress = new InetSocketAddress(GAME_INFO.bindPort);
+        if (Grasscutter.getConfig().server.game.bindAddress.equals("")) {
+            inetSocketAddress = new InetSocketAddress(Grasscutter.getConfig().server.game.bindPort);
         } else {
-            inetSocketAddress = new InetSocketAddress(GAME_INFO.bindAddress, GAME_INFO.bindPort);
+            inetSocketAddress = new InetSocketAddress(Grasscutter.getConfig().server.game.bindAddress, Grasscutter.getConfig().server.game.bindPort);
         }
         return inetSocketAddress;
     }
@@ -278,9 +278,9 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
     public SocialDetail.Builder getSocialDetailByUid(int id) {
         if (GameConstants.isServerBotUid(id)) {
             var serverAccount =
-                    id == GameConstants.SERVER_DPS_UID && GAME_INFO.dpsAccount != null
-                            ? GAME_INFO.dpsAccount
-                            : GAME_INFO.serverAccount;
+                    id == GameConstants.SERVER_DPS_UID && Grasscutter.getConfig().server.game.dpsAccount != null
+                            ? Grasscutter.getConfig().server.game.dpsAccount
+                            : Grasscutter.getConfig().server.game.serverAccount;
             return SocialDetail.newBuilder()
                     .setUid(id)
                     .setProfilePicture(ProfilePicture.newBuilder().setAvatarId(serverAccount.avatarId))
@@ -475,10 +475,10 @@ public final class GameServer extends KcpServer implements Iterable<Player> {
                     }
                 },
                 new Date(),
-                Math.max(1, GAME_INFO.tickRateMs));
+                Math.max(1, Grasscutter.getConfig().server.game.tickRateMs));
         Grasscutter.getLogger().info(translate("messages.status.free_software"));
         Grasscutter.getLogger()
-                .info(translate("messages.game.address_bind", GAME_INFO.accessAddress, address.getPort()));
+                .info(translate("messages.game.address_bind", Grasscutter.getConfig().server.game.accessAddress, address.getPort()));
         ServerStartEvent event = new ServerStartEvent(ServerEvent.Type.GAME, OffsetDateTime.now());
         event.call();
     }

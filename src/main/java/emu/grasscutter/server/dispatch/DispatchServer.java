@@ -1,6 +1,5 @@
 package emu.grasscutter.server.dispatch;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
 
 import com.google.gson.*;
 import emu.grasscutter.Grasscutter;
@@ -50,10 +49,10 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
         var dispatchKey = object.getAsString().replaceAll("\"", "");
 
         // Check if the dispatch key is valid.
-        if (!dispatchKey.equals(DISPATCH_INFO.dispatchKey)) {
+        if (!dispatchKey.equals(Grasscutter.getConfig().server.dispatch.dispatchKey)) {
             this.getLogger()
                     .warn("Invalid dispatch key received from {}.", socket.getRemoteSocketAddress());
-            this.getLogger().debug("Expected: {}, Received: {}", DISPATCH_INFO.dispatchKey, dispatchKey);
+            this.getLogger().debug("Expected: {}, Received: {}", Grasscutter.getConfig().server.dispatch.dispatchKey, dispatchKey);
             socket.close();
         } else {
             socket.setAttachment(true);
@@ -119,7 +118,7 @@ public final class DispatchServer extends WebSocketServer implements IDispatcher
         // Serialize the message into JSON.
         var serialized = JSON.toJson(message).getBytes(StandardCharsets.UTF_8);
         // Encrypt the message.
-        Crypto.xor(serialized, DISPATCH_INFO.encryptionKey);
+        Crypto.xor(serialized, Grasscutter.getConfig().server.dispatch.encryptionKey);
         // Send the message.
         socket.send(serialized);
     }

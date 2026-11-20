@@ -1,6 +1,5 @@
 package emu.grasscutter.utils.lang;
 
-import static emu.grasscutter.config.Configuration.FALLBACK_LANGUAGE;
 import static emu.grasscutter.utils.FileUtils.*;
 
 import com.google.gson.*;
@@ -60,7 +59,7 @@ public final class Language {
             return cachedLanguages.get(langCode);
         }
 
-        var fallbackLanguageCode = Utils.getLanguageCode(FALLBACK_LANGUAGE);
+        var fallbackLanguageCode = Utils.getLanguageCode(Grasscutter.getConfig().language.fallback);
         var description = getLanguageFileDescription(langCode, fallbackLanguageCode);
         var actualLanguageCode = description.getLanguageCode();
 

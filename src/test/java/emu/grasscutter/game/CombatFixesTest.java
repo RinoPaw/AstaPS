@@ -1,6 +1,6 @@
 package emu.grasscutter.game;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.protobuf.ByteString;
@@ -135,8 +135,8 @@ class CombatFixesTest {
 
     @Test
     void energyRefundsAreFlatCappedAndSkipSpecialEnergy() throws Exception {
-        boolean energyUsage = GAME_OPTIONS.energyUsage;
-        GAME_OPTIONS.energyUsage = true;
+        boolean energyUsage = Grasscutter.getConfig().server.game.gameOptions.energyUsage;
+        Grasscutter.getConfig().server.game.gameOptions.energyUsage = true;
         try {
             var f = fixture();
             var action = new AbilityModifierAction();
@@ -159,7 +159,7 @@ class CombatFixesTest {
             new ActionReviveElemEnergy().execute(ability(f), action, ByteString.EMPTY, f.entity);
             assertEquals(0, f.entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_FIRE_ENERGY));
         } finally {
-            GAME_OPTIONS.energyUsage = energyUsage;
+            Grasscutter.getConfig().server.game.gameOptions.energyUsage = energyUsage;
         }
     }
 
@@ -185,8 +185,8 @@ class CombatFixesTest {
 
     @Test
     void queuedActionIsSkippedOnceTheOwnerLeavesTheScene() throws Exception {
-        boolean energyUsage = GAME_OPTIONS.energyUsage;
-        GAME_OPTIONS.energyUsage = true;
+        boolean energyUsage = Grasscutter.getConfig().server.game.gameOptions.energyUsage;
+        Grasscutter.getConfig().server.game.gameOptions.energyUsage = true;
         try {
             var f = fixture();
             // Live when queued, gone by the time the executor runs it.
@@ -204,7 +204,7 @@ class CombatFixesTest {
             assertTrue(team.lookups >= 2);
             assertEquals(10, f.entity.getFightProperty(FightProperty.FIGHT_PROP_CUR_FIRE_ENERGY));
         } finally {
-            GAME_OPTIONS.energyUsage = energyUsage;
+            Grasscutter.getConfig().server.game.gameOptions.energyUsage = energyUsage;
         }
     }
 

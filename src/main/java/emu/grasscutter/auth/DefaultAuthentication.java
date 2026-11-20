@@ -1,6 +1,5 @@
 package emu.grasscutter.auth;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.Grasscutter;
@@ -22,7 +21,7 @@ public final class DefaultAuthentication implements AuthenticationSystem {
     private final HandbookAuthenticator handbookAuthenticator = new HandbookAuthentication();
 
     public DefaultAuthentication() {
-        if (ACCOUNT.EXPERIMENTAL_RealPassword) {
+        if (Grasscutter.getConfig().account.EXPERIMENTAL_RealPassword) {
             passwordAuthenticator = new ExperimentalPasswordAuthenticator();
         } else {
             passwordAuthenticator = new PasswordAuthenticator();

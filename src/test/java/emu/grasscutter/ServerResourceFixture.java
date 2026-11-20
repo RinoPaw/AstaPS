@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Satisfies static startup checks without loading game resources or starting a server. */
+/** Prepares minimal resource paths for tests without starting a server. */
 public final class ServerResourceFixture implements BeforeAllCallback {
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
@@ -27,7 +27,7 @@ public final class ServerResourceFixture implements BeforeAllCallback {
         }
         Files.createDirectories(resources.resolve("BinOutput"));
         Files.createDirectories(resources.resolve("ExcelBinOutput"));
-        // Configuration references Grasscutter during initialization; initialize the owner first.
+        // Initialize the configuration owner before running resource-dependent tests.
         Class.forName("emu.grasscutter.Grasscutter");
     }
 }

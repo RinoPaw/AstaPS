@@ -858,7 +858,7 @@ public class BlossomManager {
                     .toList();
             var snapshot = items.stream().map(item -> new RewardGrantJournal.Reward(
                     item.getItemId(), item.getCount(), item.getLevel())).toList();
-            var debits = Configuration.GAME_OPTIONS.resinOptions.resinUsage
+            var debits = Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage
                     ? List.of(new RewardGrantJournal.Debit(cost.itemId(), cost.amount()))
                     : List.<RewardGrantJournal.Debit>of();
             boolean accepted = RewardClaimFlow.grant(
@@ -872,7 +872,7 @@ public class BlossomManager {
                     }, () -> switch (costType) {
                         case ResinCostType_CONDENSE -> resin.useCondensedResin(1);
                         case ResinCostType_FRAGILE, ResinCostType_TIMING ->
-                                !Configuration.GAME_OPTIONS.resinOptions.resinUsage
+                                !Grasscutter.getConfig().server.game.gameOptions.resinOptions.resinUsage
                                         || player.getInventory().payItem(cost.itemId(), cost.amount());
                         case ResinCostType_HCOIN -> resin.payHcoinRewardClaim();
                         default -> resin.useResin(cost.amount());

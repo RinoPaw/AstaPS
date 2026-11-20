@@ -1,6 +1,6 @@
 package emu.grasscutter.game.player;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import dev.morphia.annotations.*;
 
@@ -751,7 +751,7 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     private void applyProperties() {
-        var withQuesting = GAME_OPTIONS.questing.enabled;
+        var withQuesting = Grasscutter.getConfig().server.game.gameOptions.questing.enabled;
 
         this.setOrFetch(PlayerProperty.PROP_RELIQUARY_TRANSFER_EXP, 0);
         this.setOrFetch(PlayerProperty.PROP_PLAYER_LEVEL, 1);
@@ -847,7 +847,7 @@ public class Player implements PlayerHook, FieldFetch {
     }
 
     private float getExpModifier() {
-        return GAME_OPTIONS.rates.adventureExp;
+        return Grasscutter.getConfig().server.game.gameOptions.rates.adventureExp;
     }
 
     public void earnExp(int exp) {

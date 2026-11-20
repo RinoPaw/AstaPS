@@ -1,6 +1,5 @@
 package emu.grasscutter.server.http.objects;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.Grasscutter;
@@ -34,7 +33,7 @@ public final class HttpJsonResponse implements Handler {
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
         // Checking for ALL here isn't required as when ALL is enabled enableDevLogging() gets enabled
-        if (DISPATCH_INFO.logRequests == ServerDebugMode.MISSING
+        if (Grasscutter.getConfig().server.dispatch.logRequests == ServerDebugMode.MISSING
                 && Arrays.stream(missingRoutes)
                         .anyMatch(x -> Objects.equals(x, ctx.endpointHandlerPath()))) {
             Grasscutter.getLogger()
@@ -44,7 +43,7 @@ public final class HttpJsonResponse implements Handler {
                                             Utils.address(ctx),
                                             ctx.method(),
                                             ctx.endpointHandlerPath())
-                                    + (DISPATCH_INFO.logRequests == ServerDebugMode.MISSING ? "(MISSING)" : ""));
+                                    + (Grasscutter.getConfig().server.dispatch.logRequests == ServerDebugMode.MISSING ? "(MISSING)" : ""));
         }
         ctx.result(response);
     }

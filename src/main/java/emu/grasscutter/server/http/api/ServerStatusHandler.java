@@ -1,7 +1,5 @@
 package emu.grasscutter.server.http.api;
 
-import static emu.grasscutter.config.Configuration.ACCOUNT;
-import static emu.grasscutter.config.Configuration.GAME_INFO;
 import static emu.grasscutter.server.http.api.ApiHandler.ERROR_RET_CODE;
 import static emu.grasscutter.server.http.api.ApiHandler.SUCCESS_RET_CODE;
 
@@ -66,7 +64,7 @@ public final class ServerStatusHandler {
 
             var game = new LinkedHashMap<String, Object>();
             game.put("players", onlinePlayers());
-            game.put("maxPlayers", ACCOUNT.maxPlayer);
+            game.put("maxPlayers", Grasscutter.getConfig().account.maxPlayer);
             game.put("gameVersion", GameConstants.VERSION);
             game.put("uptime", runtime.uptimeText());
             game.put("startedAt", runtime.startedAtText());
@@ -110,7 +108,7 @@ public final class ServerStatusHandler {
                     completedTicks,
                     tickAge,
                     runtime.uptimeMillis(),
-                    GAME_INFO.tickRateMs);
+                    Grasscutter.getConfig().server.game.tickRateMs);
             applyDeadlockHealth(response, deadlock);
 
             ctx.result(JsonUtils.encode(response));

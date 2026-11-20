@@ -1,7 +1,6 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.Grasscutter.ServerDebugMode;
 import emu.grasscutter.command.Command;
@@ -34,20 +33,20 @@ public final class ProtoCommand implements CommandHandler {
     }
 
     private static void showStatus(Player sender) {
-        CommandOutput.sendMessage(sender, "Proto logging mode: " + GAME_INFO.logPackets);
-        CommandOutput.sendMessage(sender, "Payload logging: " + (GAME_INFO.isShowPacketPayload ? "on" : "off"));
-        CommandOutput.sendMessage(sender, "Loop packet logging: " + (GAME_INFO.isShowLoopPackets ? "on" : "off"));
+        CommandOutput.sendMessage(sender, "Proto logging mode: " + Grasscutter.getConfig().server.game.logPackets);
+        CommandOutput.sendMessage(sender, "Payload logging: " + (Grasscutter.getConfig().server.game.isShowPacketPayload ? "on" : "off"));
+        CommandOutput.sendMessage(sender, "Loop packet logging: " + (Grasscutter.getConfig().server.game.isShowLoopPackets ? "on" : "off"));
         CommandOutput.sendMessage(sender, "Whitelist: " + new TreeSet<>(currentWhitelist()));
         CommandOutput.sendMessage(sender, "Blacklist: " + new TreeSet<>(currentBlacklist()));
         CommandOutput.sendMessage(sender, "Changes apply immediately and are not saved to config.json.");
     }
 
     private static Set<Integer> currentWhitelist() {
-        return SERVER.debugWhitelist == null ? Set.of() : SERVER.debugWhitelist;
+        return Grasscutter.getConfig().server.debugWhitelist == null ? Set.of() : Grasscutter.getConfig().server.debugWhitelist;
     }
 
     private static Set<Integer> currentBlacklist() {
-        return SERVER.debugBlacklist == null ? Set.of() : SERVER.debugBlacklist;
+        return Grasscutter.getConfig().server.debugBlacklist == null ? Set.of() : Grasscutter.getConfig().server.debugBlacklist;
     }
 
     private static void report(Player sender, String message) {
@@ -185,8 +184,8 @@ public final class ProtoCommand implements CommandHandler {
                 report(sender, "Unknown packet logging mode. Use none, all, whitelist, or blacklist.");
                 return;
             }
-            GAME_INFO.logPackets = selected;
-            report(sender, "Packet logging mode set to " + GAME_INFO.logPackets + ".");
+            Grasscutter.getConfig().server.game.logPackets = selected;
+            report(sender, "Packet logging mode set to " + Grasscutter.getConfig().server.game.logPackets + ".");
         }
     }
 
@@ -208,7 +207,7 @@ public final class ProtoCommand implements CommandHandler {
                 report(sender, "Expected on or off.");
                 return;
             }
-            GAME_INFO.isShowPacketPayload = enabled;
+            Grasscutter.getConfig().server.game.isShowPacketPayload = enabled;
             report(sender, "Decoded packet content logging " + (enabled ? "enabled." : "disabled."));
         }
     }
@@ -231,7 +230,7 @@ public final class ProtoCommand implements CommandHandler {
                 report(sender, "Expected on or off.");
                 return;
             }
-            GAME_INFO.isShowLoopPackets = enabled;
+            Grasscutter.getConfig().server.game.isShowLoopPackets = enabled;
             report(sender, "Loop packet logging " + (enabled ? "enabled." : "disabled."));
         }
     }
@@ -270,9 +269,9 @@ public final class ProtoCommand implements CommandHandler {
 
             Set<Integer> result = Set.copyOf(updated);
             if (whitelist) {
-                SERVER.debugWhitelist = result;
+                Grasscutter.getConfig().server.debugWhitelist = result;
             } else {
-                SERVER.debugBlacklist = result;
+                Grasscutter.getConfig().server.debugBlacklist = result;
             }
 
             String filterName = whitelist ? "Whitelist" : "Blacklist";

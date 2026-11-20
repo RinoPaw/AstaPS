@@ -1,6 +1,5 @@
 package emu.grasscutter.game.shop;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.*;
@@ -61,7 +60,7 @@ public class ShopSystem extends BaseGameSystem {
                 Grasscutter.getLogger().error("Unable to load shop data. Shop data size is 0.");
             }
 
-            if (GAME_OPTIONS.enableShopItems) {
+            if (Grasscutter.getConfig().server.game.gameOptions.enableShopItems) {
                 // Shop.json is the curated source and every one of its shops also exists in the
                 // excel data, so appending there would list those items twice. Fill only the
                 // shops it does not define.

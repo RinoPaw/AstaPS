@@ -1,6 +1,5 @@
 package emu.grasscutter.game.avatar;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 import dev.morphia.annotations.*;
 
@@ -367,7 +366,7 @@ public class Avatar {
     }
 
     public void setCurrentEnergy() {
-        if (GAME_OPTIONS.energyUsage) {
+        if (Grasscutter.getConfig().server.game.gameOptions.energyUsage) {
             this.setCurrentEnergy(this.currentEnergy);
         }
     }
@@ -381,12 +380,12 @@ public class Avatar {
             if (maxEnergy > 0 && currentEnergy > maxEnergy) currentEnergy = maxEnergy;
             this.setFightProperty(element.getMaxEnergyProp(), maxEnergy);
             this.setFightProperty(
-                    element.getCurEnergyProp(), GAME_OPTIONS.energyUsage ? currentEnergy : maxEnergy);
+                    element.getCurEnergyProp(), Grasscutter.getConfig().server.game.gameOptions.energyUsage ? currentEnergy : maxEnergy);
         }
     }
 
     public void setCurrentEnergy(FightProperty curEnergyProp, float currentEnergy) {
-        if (GAME_OPTIONS.energyUsage) {
+        if (Grasscutter.getConfig().server.game.gameOptions.energyUsage) {
             this.setFightProperty(curEnergyProp, currentEnergy);
             this.currentEnergy = currentEnergy;
             this.save();
@@ -1611,7 +1610,7 @@ public class Avatar {
                         });
 
         // Add costume if avatar has a costume.
-        if (GAME_OPTIONS.trialCostumes) {
+        if (Grasscutter.getConfig().server.game.gameOptions.trialCostumes) {
             GameData.getAvatarCostumeDataItemIdMap()
                     .values()
                     .forEach(

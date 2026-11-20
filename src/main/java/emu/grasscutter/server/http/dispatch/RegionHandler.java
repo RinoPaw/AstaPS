@@ -1,5 +1,7 @@
 package emu.grasscutter.server.http.dispatch;
 
+import emu.grasscutter.Grasscutter;
+import emu.grasscutter.config.ConfigContainer.Region;
 import static emu.grasscutter.config.Configuration.*;
 
 import com.google.gson.*;
@@ -48,7 +50,7 @@ public final class RegionHandler implements Router {
      * This lets clients on localhost / LAN / public IP / domain all join.
      */
     private static String getEffectiveGameAddress(Context ctx) {
-        var configured = GAME_INFO.accessAddress;
+        var configured = Grasscutter.getConfig().server.game.accessAddress;
         if (configured != null && !configured.isEmpty() && !configured.equals("0.0.0.0")) {
             return configured;
         }
@@ -59,15 +61,15 @@ public final class RegionHandler implements Router {
                 return h;
             }
         }
-        return GAME_INFO.bindAddress;
+        return Grasscutter.getConfig().server.game.bindAddress;
     }
 
     /** Determines the effective dispatch domain for a request (config -^ request host -^ bind). */
     private static String getEffectiveDispatchDomain(Context ctx) {
-        var scheme = "http" + (HTTP_ENCRYPTION.useInRouting ? "s" : "");
-        var configured = HTTP_INFO.accessAddress;
+        var scheme = "http" + (Grasscutter.getConfig().server.http.encryption.useInRouting ? "s" : "");
+        var configured = Grasscutter.getConfig().server.http.accessAddress;
         if (configured != null && !configured.isEmpty() && !configured.equals("0.0.0.0")) {
-            return scheme + "://" + configured + ":" + lr(HTTP_INFO.accessPort, HTTP_INFO.bindPort);
+            return scheme + "://" + configured + ":" + lr(Grasscutter.getConfig().server.http.accessPort, Grasscutter.getConfig().server.http.bindPort);
         }
         var host = ctx.host();
         if (host != null && !host.isEmpty()) {
@@ -76,13 +78,13 @@ public final class RegionHandler implements Router {
                 return scheme + "://" + h + ":" + ctx.port();
             }
         }
-        return scheme + "://" + HTTP_INFO.bindAddress + ":" + lr(HTTP_INFO.accessPort, HTTP_INFO.bindPort);
+        return scheme + "://" + Grasscutter.getConfig().server.http.bindAddress + ":" + lr(Grasscutter.getConfig().server.http.accessPort, Grasscutter.getConfig().server.http.bindPort);
     }
 
     /** Configures region data according to configuration. */
     private void initialize() {
         // Create regions.
-        var configuredRegions = new ArrayList<>(DISPATCH_INFO.regions);
+        var configuredRegions = new ArrayList<>(Grasscutter.getConfig().server.dispatch.regions);
         if (Grasscutter.getRunMode() != ServerRunMode.HYBRID && configuredRegions.size() == 0) {
             Grasscutter.getLogger()
                     .error(
@@ -92,9 +94,9 @@ public final class RegionHandler implements Router {
             configuredRegions.add(
                     new Region(
                             "os_usa",
-                            DISPATCH_INFO.defaultName,
-                            lr(GAME_INFO.accessAddress, GAME_INFO.bindAddress),
-                            lr(GAME_INFO.accessPort, GAME_INFO.bindPort)));
+                            Grasscutter.getConfig().server.dispatch.defaultName,
+                            lr(Grasscutter.getConfig().server.game.accessAddress, Grasscutter.getConfig().server.game.bindAddress),
+                            lr(Grasscutter.getConfig().server.game.accessPort, Grasscutter.getConfig().server.game.bindPort)));
 
         configuredRegions.forEach(
                 region -> {

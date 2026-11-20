@@ -1,7 +1,5 @@
 package emu.grasscutter.server.game;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.systems.ReliquaryDustSystem;
@@ -205,11 +203,11 @@ public final class GameServerPacketHandler {
     private static boolean shouldDump(GameSession session, int opcode) {
         if (PacketOpcodes.BANNED_PACKETS.contains(opcode))
             return false;
-        return switch (GAME_INFO.logPackets) {
+        return switch (Grasscutter.getConfig().server.game.logPackets) {
             case ALL -> !PacketOpcodesUtils.LOOP_PACKETS.contains(opcode)
-                    || GAME_INFO.isShowLoopPackets;
-            case WHITELIST -> SERVER.debugWhitelist.contains(opcode);
-            case BLACKLIST -> !SERVER.debugBlacklist.contains(opcode);
+                    || Grasscutter.getConfig().server.game.isShowLoopPackets;
+            case WHITELIST -> Grasscutter.getConfig().server.debugWhitelist.contains(opcode);
+            case BLACKLIST -> !Grasscutter.getConfig().server.debugBlacklist.contains(opcode);
             default -> false;
         };
     }

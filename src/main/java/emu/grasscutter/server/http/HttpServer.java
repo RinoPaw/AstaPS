@@ -13,7 +13,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import java.io.*;
 import java.util.Arrays;
 
-import static emu.grasscutter.config.Configuration.*;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 public final class HttpServer {
@@ -30,11 +29,11 @@ public final class HttpServer {
 
             config.jetty.server(HttpServer::createServer);
 
-            if (HTTP_ENCRYPTION.useEncryption)
+            if (Grasscutter.getConfig().server.http.encryption.useEncryption)
                 config.plugins.enableSslRedirects();
 
-            if (HTTP_POLICIES.cors.enabled) {
-                var allowedOrigins = HTTP_POLICIES.cors.allowedOrigins;
+            if (Grasscutter.getConfig().server.http.policies.cors.enabled) {
+                var allowedOrigins = Grasscutter.getConfig().server.http.policies.cors.allowedOrigins;
                 config.plugins.enableCors(cors -> cors.add(corsConfig -> {
                     if (allowedOrigins.length > 0) {
                         if (Arrays.asList(allowedOrigins).contains("*"))
@@ -44,7 +43,7 @@ public final class HttpServer {
                 }));
             }
 
-            if (DISPATCH_INFO.logRequests == ServerDebugMode.ALL)
+            if (Grasscutter.getConfig().server.dispatch.logRequests == ServerDebugMode.ALL)
                 config.plugins.enableDevLogging();
 
             config.jsonMapper(new JavalinGson());
@@ -65,18 +64,18 @@ public final class HttpServer {
         ServerConnector serverConnector
             = new ServerConnector(server);
 
-        if (HTTP_ENCRYPTION.useEncryption) {
+        if (Grasscutter.getConfig().server.http.encryption.useEncryption) {
             var sslContextFactory = new SslContextFactory.Server();
-            var keystoreFile = new File(HTTP_ENCRYPTION.keystore);
+            var keystoreFile = new File(Grasscutter.getConfig().server.http.encryption.keystore);
 
             if (!keystoreFile.exists()) {
-                HTTP_ENCRYPTION.useEncryption = false;
-                HTTP_ENCRYPTION.useInRouting = false;
+                Grasscutter.getConfig().server.http.encryption.useEncryption = false;
+                Grasscutter.getConfig().server.http.encryption.useInRouting = false;
 
                 Grasscutter.getLogger().warn(translate("messages.dispatch.keystore.no_keystore_error"));
             } else try {
                 sslContextFactory.setKeyStorePath(keystoreFile.getPath());
-                sslContextFactory.setKeyStorePassword(HTTP_ENCRYPTION.keystorePassword);
+                sslContextFactory.setKeyStorePassword(Grasscutter.getConfig().server.http.encryption.keystorePassword);
             } catch (Exception ignored) {
                 Grasscutter.getLogger().warn(translate("messages.dispatch.keystore.password_error"));
 
@@ -94,8 +93,8 @@ public final class HttpServer {
             }
         }
 
-        serverConnector.setPort(HTTP_INFO.bindPort);
-        serverConnector.setHost(HTTP_INFO.bindAddress);
+        serverConnector.setPort(Grasscutter.getConfig().server.http.bindPort);
+        serverConnector.setHost(Grasscutter.getConfig().server.http.bindAddress);
         server.setConnectors(new ServerConnector[]{serverConnector});
 
         return server;
@@ -124,13 +123,13 @@ public final class HttpServer {
 
     public void start() throws UnsupportedEncodingException {
 
-        if (HTTP_INFO.bindAddress.isEmpty()) {
-            this.javalin.start(HTTP_INFO.bindPort);
+        if (Grasscutter.getConfig().server.http.bindAddress.isEmpty()) {
+            this.javalin.start(Grasscutter.getConfig().server.http.bindPort);
         } else {
-            this.javalin.start(HTTP_INFO.bindAddress, HTTP_INFO.bindPort);
+            this.javalin.start(Grasscutter.getConfig().server.http.bindAddress, Grasscutter.getConfig().server.http.bindPort);
         }
 
-        Grasscutter.getLogger().info(translate("messages.dispatch.address_bind", HTTP_INFO.accessAddress, this.javalin.port()));
+        Grasscutter.getLogger().info(translate("messages.dispatch.address_bind", Grasscutter.getConfig().server.http.accessAddress, this.javalin.port()));
     }
 
     public static class DefaultRequestRouter implements Router {
@@ -138,7 +137,7 @@ public final class HttpServer {
         public void applyRoutes(Javalin javalin) {
             javalin.get("/", ctx -> {
 
-                File file = new File(HTTP_STATIC_FILES.indexFile);
+                File file = new File(Grasscutter.getConfig().server.http.files.indexFile);
                 if (!file.exists()) {
                     ctx.contentType(ContentType.TEXT_HTML);
                     ctx.result("""

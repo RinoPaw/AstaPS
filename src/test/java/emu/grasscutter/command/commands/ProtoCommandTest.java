@@ -1,12 +1,11 @@
 package emu.grasscutter.command.commands;
 
+import emu.grasscutter.Grasscutter;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
-import static emu.grasscutter.config.Configuration.SERVER;
 
 import emu.grasscutter.command.Command;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
@@ -41,15 +40,15 @@ final class ProtoCommandTest {
 
     @Test
     void commandsUpdateTheLivePacketSettings() {
-        var previousMode = GAME_INFO.logPackets;
-        var previousPayload = GAME_INFO.isShowPacketPayload;
-        var previousLoops = GAME_INFO.isShowLoopPackets;
-        var previousWhitelist = SERVER.debugWhitelist;
-        var previousBlacklist = SERVER.debugBlacklist;
+        var previousMode = Grasscutter.getConfig().server.game.logPackets;
+        var previousPayload = Grasscutter.getConfig().server.game.isShowPacketPayload;
+        var previousLoops = Grasscutter.getConfig().server.game.isShowLoopPackets;
+        var previousWhitelist = Grasscutter.getConfig().server.debugWhitelist;
+        var previousBlacklist = Grasscutter.getConfig().server.debugBlacklist;
 
         try {
-            SERVER.debugWhitelist = Set.of();
-            SERVER.debugBlacklist = Set.of();
+            Grasscutter.getConfig().server.debugWhitelist = Set.of();
+            Grasscutter.getConfig().server.debugBlacklist = Set.of();
             var command = new ProtoCommand().createCommandLine(null, null);
             command.execute("mode", "whitelist");
             command.execute("payload", "on");
@@ -57,17 +56,17 @@ final class ProtoCommandTest {
             command.execute("whitelist", "add", "123");
             command.execute("blacklist", "add", "456");
 
-            assertEquals(ServerDebugMode.WHITELIST, GAME_INFO.logPackets);
-            assertTrue(GAME_INFO.isShowPacketPayload);
-            assertTrue(GAME_INFO.isShowLoopPackets);
-            assertEquals(Set.of(123), SERVER.debugWhitelist);
-            assertEquals(Set.of(456), SERVER.debugBlacklist);
+            assertEquals(ServerDebugMode.WHITELIST, Grasscutter.getConfig().server.game.logPackets);
+            assertTrue(Grasscutter.getConfig().server.game.isShowPacketPayload);
+            assertTrue(Grasscutter.getConfig().server.game.isShowLoopPackets);
+            assertEquals(Set.of(123), Grasscutter.getConfig().server.debugWhitelist);
+            assertEquals(Set.of(456), Grasscutter.getConfig().server.debugBlacklist);
         } finally {
-            GAME_INFO.logPackets = previousMode;
-            GAME_INFO.isShowPacketPayload = previousPayload;
-            GAME_INFO.isShowLoopPackets = previousLoops;
-            SERVER.debugWhitelist = previousWhitelist;
-            SERVER.debugBlacklist = previousBlacklist;
+            Grasscutter.getConfig().server.game.logPackets = previousMode;
+            Grasscutter.getConfig().server.game.isShowPacketPayload = previousPayload;
+            Grasscutter.getConfig().server.game.isShowLoopPackets = previousLoops;
+            Grasscutter.getConfig().server.debugWhitelist = previousWhitelist;
+            Grasscutter.getConfig().server.debugBlacklist = previousBlacklist;
         }
     }
 

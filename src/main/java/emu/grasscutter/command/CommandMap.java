@@ -1,6 +1,5 @@
 package emu.grasscutter.command;
 
-import static emu.grasscutter.config.Configuration.SERVER;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
@@ -655,7 +654,7 @@ public final class CommandMap {
         targetPlayer = event.getTarget();
         rawMessage = event.getCommand();
 
-        if (SERVER.logCommands) {
+        if (Grasscutter.getConfig().server.logCommands) {
             if (player != null) {
                 LOGGER
                         .info(

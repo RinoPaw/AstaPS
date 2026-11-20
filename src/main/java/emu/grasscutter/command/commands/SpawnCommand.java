@@ -1,6 +1,6 @@
 package emu.grasscutter.command.commands;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static emu.grasscutter.utils.lang.Language.translate;
 
 import emu.grasscutter.command.Command;
@@ -154,10 +154,10 @@ public final class SpawnCommand implements CommandHandler {
             param.rot = rot;
             param.scene = targetPlayer.getScene();
 
-            if (param.scene.getEntities().size() + param.amount > GAME_OPTIONS.sceneEntityLimit) {
+            if (param.scene.getEntities().size() + param.amount > Grasscutter.getConfig().server.game.gameOptions.sceneEntityLimit) {
                 param.amount = Math.max(
                         Math.min(
-                                GAME_OPTIONS.sceneEntityLimit - param.scene.getEntities().size(),
+                                Grasscutter.getConfig().server.game.gameOptions.sceneEntityLimit - param.scene.getEntities().size(),
                                 param.amount),
                         0);
                 CommandOutput.sendMessage(

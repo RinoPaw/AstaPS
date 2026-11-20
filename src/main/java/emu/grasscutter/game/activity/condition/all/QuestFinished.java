@@ -1,6 +1,6 @@
 package emu.grasscutter.game.activity.condition.all;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 import static emu.grasscutter.game.activity.condition.ActivityConditions.NEW_ACTIVITY_COND_QUEST_FINISH;
 
 import emu.grasscutter.game.activity.*;
@@ -15,7 +15,7 @@ public class QuestFinished extends ActivityConditionBaseHandler {
             PlayerActivityData activityData, ActivityConfigItem activityConfig, int... params) {
         // With questing off no quest ever finishes, which would lock nearly every 7.x activity
         // for good. PlayerProgressManager unlocks quest-gated open states the same way.
-        if (!GAME_OPTIONS.questing.enabled) {
+        if (!Grasscutter.getConfig().server.game.gameOptions.questing.enabled) {
             return true;
         }
 

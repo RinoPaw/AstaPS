@@ -1,6 +1,6 @@
 package emu.grasscutter.game.chat;
 
-import static emu.grasscutter.config.Configuration.GAME_INFO;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.command.CommandMap;
@@ -247,7 +247,7 @@ public class ChatSystem implements ChatSystemHandler {
      * Welcome messages
      ********************/
     private void sendServerWelcomeMessages(Player player) {
-        var joinOptions = GAME_INFO.joinOptions;
+        var joinOptions = Grasscutter.getConfig().server.game.joinOptions;
 
         if (joinOptions.welcomeEmotes != null && joinOptions.welcomeEmotes.length > 0) {
             this.sendPrivateMessageFromServer(

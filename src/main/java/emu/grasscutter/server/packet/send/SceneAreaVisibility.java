@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.send;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.game.player.Player;
 import java.util.Collection;
@@ -16,7 +16,7 @@ public final class SceneAreaVisibility {
     private SceneAreaVisibility() {}
 
     public static Collection<Integer> forPlayer(Player player, int sceneId) {
-        if (!GAME_OPTIONS.mapFogEnabled) return ALL_AREAS;
+        if (!Grasscutter.getConfig().server.game.gameOptions.mapFogEnabled) return ALL_AREAS;
 
         var areas = player.getUnlockedSceneAreas(sceneId);
         if (sceneId != 3) return areas;

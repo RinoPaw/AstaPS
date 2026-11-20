@@ -1,6 +1,5 @@
 package emu.grasscutter.server.http.objects;
 
-import static emu.grasscutter.config.Configuration.DISPATCH_INFO;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.utils.FileUtils;
@@ -16,7 +15,7 @@ public class WebStaticVersionResponse implements Handler {
             ctx.contentType(fromExtension != null ? fromExtension : ContentType.APPLICATION_OCTET_STREAM);
             ctx.result(filestream.readAllBytes());
         } catch (Exception e) {
-            if (DISPATCH_INFO.logRequests == Grasscutter.ServerDebugMode.MISSING) {
+            if (Grasscutter.getConfig().server.dispatch.logRequests == Grasscutter.ServerDebugMode.MISSING) {
                 Grasscutter.getLogger().warn("Webstatic File Missing: " + path);
             }
             ctx.status(404);

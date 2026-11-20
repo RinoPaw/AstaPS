@@ -18,7 +18,6 @@ import emu.grasscutter.server.packet.send.PacketEntityFightPropChangeReasonNotif
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.quest.enums.QuestContent;
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 import java.util.concurrent.ConcurrentHashMap;
 
 @AbilityAction(AbilityModifierAction.Type.AvatarSkillStart)
@@ -66,7 +65,7 @@ public class ActionAvatarSkillStart extends AbilityActionHandler {
 
        if (action.skillID == 11065) {
             Avatar avatar = ability.getPlayerOwner().getCurrentAvatar();
-            if (GAME_OPTIONS.energyUsage) {
+            if (Grasscutter.getConfig().server.game.gameOptions.energyUsage) {
                 avatar.clearSpecialEnergy();
             } else {
 

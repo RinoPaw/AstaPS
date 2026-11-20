@@ -31,8 +31,8 @@ public class PacketPlayerLoginRsp extends BasePacket {
                     // todo: we might want to push custom config to client
                     RegionInfo serverRegion =
                             RegionInfo.newBuilder()
-                                    .setGateserverIp(lr(GAME_INFO.accessAddress, GAME_INFO.bindAddress))
-                                    .setGateserverPort(lr(GAME_INFO.accessPort, GAME_INFO.bindPort))
+                                    .setGateserverIp(lr(Grasscutter.getConfig().server.game.accessAddress, Grasscutter.getConfig().server.game.bindAddress))
+                                    .setGateserverPort(lr(Grasscutter.getConfig().server.game.accessPort, Grasscutter.getConfig().server.game.bindPort))
                                     .build();
 
                     regionCache =

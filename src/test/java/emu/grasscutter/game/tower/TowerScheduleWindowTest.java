@@ -1,6 +1,6 @@
 package emu.grasscutter.game.tower;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+import emu.grasscutter.Grasscutter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +26,8 @@ class TowerScheduleWindowTest {
 
     @BeforeEach
     void configureTower() {
-        originalOptions = GAME_OPTIONS.tower;
-        GAME_OPTIONS.tower = new TowerOptions();
+        originalOptions = Grasscutter.getConfig().server.game.gameOptions.tower;
+        Grasscutter.getConfig().server.game.gameOptions.tower = new TowerOptions();
         tower = new TowerSystem(null);
         config = tower.getTowerScheduleConfig();
         assertNotNull(config);
@@ -37,7 +37,7 @@ class TowerScheduleWindowTest {
 
     @AfterEach
     void restoreTowerOptions() {
-        GAME_OPTIONS.tower = originalOptions;
+        Grasscutter.getConfig().server.game.gameOptions.tower = originalOptions;
     }
 
     @Test
@@ -126,7 +126,7 @@ class TowerScheduleWindowTest {
 
     @Test
     void rotationUsesTheDailyWindowInsteadOfTheStaticConfig() {
-        GAME_OPTIONS.tower.rotate = true;
+        Grasscutter.getConfig().server.game.gameOptions.tower.rotate = true;
         configureWindow(date(2022, 6, 1, 0, 0), date(2030, 6, 30, 0, 0));
 
         assertWindow(date(2026, 10, 7, 12, 0), date(2026, 10, 7, 4, 0), date(2026, 10, 8, 4, 0));
@@ -134,8 +134,8 @@ class TowerScheduleWindowTest {
 
     @Test
     void aPinnedScheduleKeepsItsConfiguredWindowWhenRotationIsEnabled() {
-        GAME_OPTIONS.tower.scheduleId = 45;
-        GAME_OPTIONS.tower.rotate = true;
+        Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId = 45;
+        Grasscutter.getConfig().server.game.gameOptions.tower.rotate = true;
         Date start = date(2022, 6, 1, 0, 0);
         Date end = date(2030, 6, 30, 0, 0);
         configureWindow(start, end);
@@ -144,7 +144,7 @@ class TowerScheduleWindowTest {
 
         assertEquals(start, window.startTime());
         assertEquals(end, window.endTime());
-        assertEquals(45, GAME_OPTIONS.tower.scheduleId);
+        assertEquals(45, Grasscutter.getConfig().server.game.gameOptions.tower.scheduleId);
     }
 
     private void configureWindow(Date start, Date end) {

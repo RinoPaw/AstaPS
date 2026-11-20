@@ -1,6 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
-import static emu.grasscutter.config.Configuration.*;
+import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.*;
 import emu.grasscutter.data.GameData;
@@ -47,7 +47,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         if (player.getAvatars().getAvatarCount() == 0) {
             Avatar mainCharacter = new Avatar(avatarId);
 
-            if (!GAME_OPTIONS.questing.enabled) {
+            if (!Grasscutter.getConfig().server.game.gameOptions.questing.enabled) {
                 mainCharacter.setSkillDepotData(
                         GameData.getAvatarSkillDepotDataMap().get(startingSkillDepot));
             }
@@ -66,7 +66,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         // 7.1 accepts the chosen Traveler first, then runs a second native intro client-side. Do
         // not create the World yet: sending scene-entry here cuts that intro off and eventually
         // makes the client reconnect.
-        int configuredRsp = GAME_OPTIONS.newAccountIntro.setPlayerBornDataRsp;
+        int configuredRsp = Grasscutter.getConfig().server.game.gameOptions.newAccountIntro.setPlayerBornDataRsp;
         if (configuredRsp > 0 && configuredRsp != PacketSetPlayerBornDataRsp.CMD_ID) {
             session.send(new BasePacket(configuredRsp));
         } else {
@@ -85,7 +85,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
                         req.getNickName(),
                         avatarId);
 
-        var welcomeMail = GAME_INFO.joinOptions.welcomeMail;
+        var welcomeMail = Grasscutter.getConfig().server.game.joinOptions.welcomeMail;
         Mail mail = new Mail();
         mail.mailContent.title = welcomeMail.title;
         mail.mailContent.sender = welcomeMail.sender;

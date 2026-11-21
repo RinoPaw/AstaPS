@@ -10,6 +10,7 @@ import emu.grasscutter.game.entity.gadget.*;
 import emu.grasscutter.game.entity.gadget.platform.*;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.*;
+import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.*;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.*;
@@ -217,14 +218,22 @@ public class EntityGadget extends EntityBaseGadget {
         this.setState(state);
         ticksSinceChange = getScene().getSceneTimeSeconds();
         this.getScene().broadcastPacket(new PacketGadgetStateNotify(this, state));
+        int groupId = this.getGroupId();
+        int configId = this.getConfigId();
+        if (groupId > 0 && configId > 0) {
+            for (var player : this.getScene().getPlayers()) {
+                player.getQuestManager()
+                        .queueEvent(QuestContent.QUEST_CONTENT_GADGET_STATE_CHANGE, groupId, configId, state);
+            }
+        }
         getScene()
                 .getScriptManager()
                 .callEvent(
                         new ScriptArgs(
-                                        this.getGroupId(),
+                                        groupId,
                                         EventType.EVENT_GADGET_STATE_CHANGE,
                                         state,
-                                        this.getConfigId())
+                                        configId)
                                 .setParam3(oldState));
     }
 

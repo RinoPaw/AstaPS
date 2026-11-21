@@ -177,6 +177,9 @@ public class GameMainQuest {
             this.state = ParentQuestState.PARENT_QUEST_STATE_FINISHED;
         }
 
+        this.getOwner().getQuestManager().queueEvent(
+                QuestContent.QUEST_CONTENT_PARENT_QUEST_STATE_EQUAL, this.getParentQuestId());
+
         this.getOwner().getSession().send(new PacketFinishedParentQuestUpdateNotify(this));
         this.getOwner().getSession().send(new PacketCodexDataUpdateNotify(this));
 

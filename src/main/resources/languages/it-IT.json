@@ -195,6 +195,8 @@
       "given_level": "Dato %s con livello %s %s volte a %s.",
       "given_avatar": "Dato %s con livello %s a %s.",
       "giveall_success": "Dato tutti gli oggetti con successo.",
+      "giveall_partial": "Impossibile consegnare %s oggetti. Controlla la capienza dell’inventario e i limiti di accumulo.",
+      "grant_failed": "Impossibile consegnare l’oggetto. Controlla l’oggetto e i limiti dell’inventario.",
       "description": "Dà un oggetto a te o al giocatore specificato. Può anche dare tutte le armi, Avatar e/o materiali, e può costruire manufatti personalizzati."
     },
     "heal": {

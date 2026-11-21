@@ -16,6 +16,32 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class LimboAndShieldTest {
+    @Test
+    void fallProtectionEndsWhenTheActiveModifierIsRemoved() {
+        var entity = new StubEntity();
+        var data = new AbilityModifier();
+        data.properties = new AbilityModifier.AbilityModifierProperty();
+        data.properties.Actor_FallingDamageRatio =
+                new emu.grasscutter.data.common.DynamicFloat(-1f);
+        entity.getInstancedModifiers()
+                .put(
+                        7,
+                        new emu.grasscutter.game.ability.AbilityModifierController(
+                                null, null, data));
+        assertEquals(0f, entity.getFallingDamageMultiplier());
+        entity.getInstancedModifiers().remove(7);
+        assertEquals(1f, entity.getFallingDamageMultiplier());
+        data.properties.Actor_FallingDamageRatio =
+                new emu.grasscutter.data.common.DynamicFloat(-0.8f);
+        entity.getInstancedModifiers()
+                .put(
+                        8,
+                        new emu.grasscutter.game.ability.AbilityModifierController(
+                                null, null, data));
+        assertEquals(0.2f, entity.getFallingDamageMultiplier(), 0.0001f);
+    }
+
+
     /** Just enough of an entity to exercise the limbo and shield bookkeeping. */
     private static final class StubEntity extends GameEntity {
         private final Int2FloatMap props = new Int2FloatOpenHashMap();

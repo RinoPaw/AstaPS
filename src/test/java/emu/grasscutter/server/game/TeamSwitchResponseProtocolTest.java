@@ -32,18 +32,18 @@ final class TeamSwitchResponseProtocolTest {
         session.send(acknowledgement);
 
         assertEquals(1, transport.writes.size(), "The first acknowledgement must not be dropped");
-        assertEquals(29488, acknowledgement.getOpcode());
-        assertEquals(29488, PacketOpcodes.ChooseCurAvatarTeamRsp);
-        assertArrayEquals(new byte[] {0x28, (byte) teamId}, acknowledgement.getData());
+        assertEquals(8831, acknowledgement.getOpcode());
+        assertEquals(8831, PacketOpcodes.ChooseCurAvatarTeamRsp);
+        assertArrayEquals(new byte[] {0x10, (byte) teamId}, acknowledgement.getData());
         assertEquals(teamId, ChooseCurAvatarTeamRsp.parseFrom(acknowledgement.getData()).getCurTeamId());
-        assertEquals(5, ChooseCurAvatarTeamRsp.getDescriptor().findFieldByName("cur_team_id").getNumber());
+        assertEquals(2, ChooseCurAvatarTeamRsp.getDescriptor().findFieldByName("cur_team_id").getNumber());
     }
 
     @Test
-    void errorRetcodeUsesSignedInt32Field12() {
+    void errorRetcodeUsesSignedInt32Field14() {
         var error = ChooseCurAvatarTeamRsp.newBuilder().setRetcode(-1).build();
-        assertArrayEquals(HexFormat.of().parseHex("60ffffffffffffffffff01"), error.toByteArray());
-        assertEquals(12, ChooseCurAvatarTeamRsp.getDescriptor().findFieldByName("retcode").getNumber());
+        assertArrayEquals(HexFormat.of().parseHex("70ffffffffffffffffff01"), error.toByteArray());
+        assertEquals(14, ChooseCurAvatarTeamRsp.getDescriptor().findFieldByName("retcode").getNumber());
     }
 
     private static final class RecordingTransport implements GameSessionManager.KcpTunnel {

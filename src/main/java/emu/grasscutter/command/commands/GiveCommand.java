@@ -19,6 +19,7 @@ import emu.grasscutter.data.excels.reliquary.ReliquaryAffixData;
 import emu.grasscutter.data.excels.reliquary.ReliquaryMainPropData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryAddPolicy;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
@@ -109,24 +110,21 @@ public final class GiveCommand implements CommandHandler {
             switch (target.toLowerCase(Locale.ROOT)) {
                 case "all" -> {
                     param.constellation = constellation == null ? 6 : constellation;
-                    giveAll(targetPlayer, param);
-                    successAll(sender);
+                    reportBulkGrant(sender, giveAll(targetPlayer, param));
                     return;
                 }
                 case "weapons" -> {
-                    giveAllWeapons(targetPlayer, param);
-                    successAll(sender);
+                    reportBulkGrant(sender, giveAllWeapons(targetPlayer, param));
                     return;
                 }
                 case "mats", "materials" -> {
-                    giveAllMats(targetPlayer, param);
-                    successAll(sender);
+                    reportBulkGrant(sender, giveAllMats(targetPlayer, param));
                     return;
                 }
                 case "avatars", "characters" -> {
                     param.constellation = constellation == null ? 6 : constellation;
                     giveAllAvatars(targetPlayer, param);
-                    successAll(sender);
+                    reportBulkGrant(sender, 0);
                     return;
                 }
                 default -> {
@@ -176,7 +174,10 @@ public final class GiveCommand implements CommandHandler {
                     giveWholeSet(sender, targetPlayer, param);
                     return;
                 }
-                targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
+                if (!targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop).allAccepted()) {
+                    CommandOutput.sendTranslatedMessage(sender, "commands.give.grant_failed");
+                    return;
+                }
                 CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_level",
@@ -188,7 +189,10 @@ public final class GiveCommand implements CommandHandler {
             }
 
             if (param.data.getItemType() == ItemType.ITEM_WEAPON) {
-                targetPlayer.getInventory().addItems(makeUnstackableItems(param), ActionReason.SubfieldDrop);
+                if (!targetPlayer.getInventory().addItems(makeUnstackableItems(param), ActionReason.SubfieldDrop).allAccepted()) {
+                    CommandOutput.sendTranslatedMessage(sender, "commands.give.grant_failed");
+                    return;
+                }
                 CommandOutput.sendTranslatedMessage(
                         sender,
                         "commands.give.given_with_level_and_refinement",
@@ -200,8 +204,11 @@ public final class GiveCommand implements CommandHandler {
                 return;
             }
 
-            targetPlayer.getInventory().addItem(
-                    new GameItem(param.data, param.amount), ActionReason.SubfieldDrop);
+            if (!targetPlayer.getInventory().addItem(
+                    new GameItem(param.data, param.amount), ActionReason.SubfieldDrop)) {
+                CommandOutput.sendTranslatedMessage(sender, "commands.give.grant_failed");
+                return;
+            }
             CommandOutput.sendTranslatedMessage(
                     sender,
                     "commands.give.given",
@@ -445,13 +452,19 @@ public final class GiveCommand implements CommandHandler {
         }
     }
 
-    private static void addItemsChunked(Player player, List<GameItem> items, int packetSize) {
-        for (int i = 0; i < items.size(); i += packetSize) {
-            player.getInventory().addItems(items.subList(i, Math.min(i + packetSize, items.size())));
+    private static long addItemsChunked(Player player, List<GameItem> items) {
+        long rejected = 0;
+        for (int i = 0; i < items.size(); i += 100) {
+            var result = player.getInventory().addItems(
+                    items.subList(i, Math.min(i + 100, items.size())), null, InventoryAddPolicy.BEST_EFFORT);
+            for (var entry : result.entries()) {
+                rejected += entry.requested() - entry.added();
+            }
         }
+        return rejected;
     }
 
-    private static void giveAllMats(Player player, GiveItemParameters param) {
+    private static long giveAllMats(Player player, GiveItemParameters param) {
         List<GameItem> items = new ArrayList<>();
         for (ItemData data : GameData.getItemDataMap().values()) {
             int id = data.getId();
@@ -460,10 +473,10 @@ public final class GiveCommand implements CommandHandler {
             item.setCount(param.amount);
             items.add(item);
         }
-        addItemsChunked(player, items, 100);
+        return addItemsChunked(player, items);
     }
 
-    private static void giveAllWeapons(Player player, GiveItemParameters param) {
+    private static long giveAllWeapons(Player player, GiveItemParameters param) {
         int promoteLevel = GameItem.getMinPromoteLevel(param.lvl);
         int quantity = Math.min(param.amount, 5);
         List<GameItem> items = new ArrayList<>();
@@ -479,33 +492,43 @@ public final class GiveCommand implements CommandHandler {
                 items.add(item);
             }
         }
-        addItemsChunked(player, items, 100);
+        return addItemsChunked(player, items);
     }
 
-    private static void giveAll(Player player, GiveItemParameters param) {
+    private static long giveAll(Player player, GiveItemParameters param) {
         giveAllAvatars(player, param);
-        giveAllMats(player, param);
-        giveAllWeapons(player, param);
+        return giveAllMats(player, param) + giveAllWeapons(player, param);
     }
 
     private static void giveWholeSet(Player sender, Player targetPlayer, GiveItemParameters param) {
         param.mainPropId = -1;
         param.appendPropIdList = null;
-        int given = 0;
+        List<GameItem> items = new ArrayList<>();
         for (int piece : param.setPieces) {
             ItemData data = GameData.getItemDataMap().get(piece);
-            if (data == null) continue;
-            param.data = data;
-            param.id = piece;
-            targetPlayer.getInventory().addItems(makeArtifacts(param), ActionReason.SubfieldDrop);
-            given++;
+            if (data == null) {
+                CommandOutput.sendTranslatedMessage(sender, "commands.give.grant_failed");
+                return;
+            }
+            var pieceParam = param.copy();
+            pieceParam.data = data;
+            pieceParam.id = piece;
+            items.addAll(makeArtifacts(pieceParam));
+        }
+        if (!targetPlayer.getInventory().addItems(items, ActionReason.SubfieldDrop).allAccepted()) {
+            CommandOutput.sendTranslatedMessage(sender, "commands.give.grant_failed");
+            return;
         }
         CommandOutput.sendTranslatedMessage(
-                sender, "commands.give.given", given, "artifacts of the set", targetPlayer.getUid());
+                sender, "commands.give.given", items.size(), "artifacts of the set", targetPlayer.getUid());
     }
 
-    private static void successAll(Player sender) {
-        CommandOutput.sendTranslatedMessage(sender, "commands.give.giveall_success");
+    private static void reportBulkGrant(Player sender, long rejected) {
+        if (rejected > 0) {
+            CommandOutput.sendTranslatedMessage(sender, "commands.give.giveall_partial", rejected);
+        } else {
+            CommandOutput.sendTranslatedMessage(sender, "commands.give.giveall_success");
+        }
     }
 
     private static final class GiveItemParameters {

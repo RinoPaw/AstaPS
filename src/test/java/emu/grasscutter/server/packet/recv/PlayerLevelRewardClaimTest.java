@@ -7,9 +7,12 @@ import com.google.protobuf.CodedOutputStream;
 import emu.grasscutter.ServerResourceFixture;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.PlayerLevelData;
 import emu.grasscutter.data.excels.RewardData;
+import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
+import emu.grasscutter.game.inventory.InventoryAddResult;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.BasePacket;
@@ -27,16 +30,16 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import sun.misc.Unsafe;
 
-/** Captured 7.1 clicks through the real router, with isolated resources and inventory. */
+/** Routes 7.2 rank claims through the real router, with isolated resources and inventory. */
 @ExtendWith(ServerResourceFixture.class)
 final class PlayerLevelRewardClaimTest {
-    // User confirmed Katheryne's rank 2/3/4 clicks on 2026-10-10; independent of constants.
-    private static final int CAPTURED_OPCODE = 7321;
+    private static final int REQUEST_OPCODE = 8154;
     private RecordingPlayer player;
     private CaptureSession session;
     private GameServerPacketHandler router;
     private final Map<Integer, PlayerLevelData> oldLevels = new HashMap<>();
     private RewardData oldReward;
+    private ItemData oldPrimogem;
 
     @BeforeEach
     void setup() throws Exception {
@@ -50,6 +53,9 @@ final class PlayerLevelRewardClaimTest {
                                             "{\"level\":" + level + ",\"rewardId\":991001}",
                                             PlayerLevelData.class));
         }
+        var primogem = new Gson().fromJson(
+                "{\"id\":201,\"itemType\":\"ITEM_VIRTUAL\"}", ItemData.class);
+        oldPrimogem = GameData.getItemDataMap().put(201, primogem);
         oldReward = GameData.getRewardDataMap().get(991001);
         var reward = new RewardData();
         reward.rewardId = 991001;
@@ -72,6 +78,8 @@ final class PlayerLevelRewardClaimTest {
                     if (row == null) GameData.getPlayerLevelDataMap().remove((int) id);
                     else GameData.getPlayerLevelDataMap().put((int) id, row);
                 });
+        if (oldPrimogem == null) GameData.getItemDataMap().remove(201);
+        else GameData.getItemDataMap().put(201, oldPrimogem);
         if (oldReward == null) GameData.getRewardDataMap().remove(991001);
         else GameData.getRewardDataMap().put(991001, oldReward);
     }
@@ -89,6 +97,34 @@ final class PlayerLevelRewardClaimTest {
         assertEquals(0, reply().getRetcode(), "A duplicate must be answered without paying again");
         assertEquals(1, player.inventory.grants.size());
         assertEquals(1, player.saves);
+    }
+
+    @Test
+    void refusedRewardKeepsTheRankClaimable() throws Exception {
+        player.inventory.refuse = true;
+        claim(5);
+        assertNotEquals(0, reply().getRetcode());
+        assertTrue(player.getRewardedLevels().isEmpty());
+        assertEquals(0, player.saves);
+
+        player.inventory.refuse = false;
+        session.sent.clear();
+        claim(5);
+        assertEquals(0, reply().getRetcode());
+        assertEquals(Set.of(5), player.getRewardedLevels());
+        assertEquals(1, player.inventory.grants.size());
+    }
+
+    @Test
+    void rewardCurrencyOutsideItemListIsDelivered() throws Exception {
+        var reward = GameData.getRewardDataMap().get(991001);
+        reward.rewardItemList = List.of();
+        reward.hcoin = 100;
+        claim(5);
+        assertEquals(0, reply().getRetcode());
+        var item = player.inventory.grants.getFirst().getFirst();
+        assertEquals(201, item.getItemId());
+        assertEquals(100, item.getCount());
     }
 
     @Test
@@ -122,10 +158,10 @@ final class PlayerLevelRewardClaimTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"7802, 2", "7803, 3", "7804, 4"})
-    void capturedKatheryneClicksRouteDecodeAndPayOnce(String hex, int level) throws Exception {
+    @CsvSource({"4802, 2", "4803, 3", "4804, 4"})
+    void rankRequestsRouteDecodeAndPayOnce(String hex, int level) throws Exception {
         route(hex);
-        assertEquals(CAPTURED_OPCODE, PacketOpcodes.TakePlayerLevelRewardReq);
+        assertEquals(REQUEST_OPCODE, PacketOpcodes.TakePlayerLevelRewardReq);
         assertEquals(0, reply().getRetcode());
         assertEquals(level, reply().getLevel());
         assertEquals(991001, reply().getRewardId());
@@ -139,7 +175,7 @@ final class PlayerLevelRewardClaimTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "5805", "7a0105", "780580", "7c"})
+    @ValueSource(strings = {"", "7805", "4a0105", "480580", "4c"})
     void missingWrongWireTypeOrMalformedRankIsAnsweredWithoutPaying(String hex) throws Exception {
         route(hex);
         assertNotEquals(0, reply().getRetcode());
@@ -149,11 +185,11 @@ final class PlayerLevelRewardClaimTest {
 
     @Test
     void unknownFieldsAreSkippedAndLastRankWins() throws Exception {
-        route("08017805");
+        route("08014805");
         assertEquals(0, reply().getRetcode());
         assertEquals(5, reply().getLevel());
         session.sent.clear();
-        route("78057806");
+        route("48054806");
         assertNotEquals(0, reply().getRetcode());
         assertEquals(1, player.inventory.grants.size(), "A trailing future rank must not pay");
     }
@@ -161,13 +197,13 @@ final class PlayerLevelRewardClaimTest {
     private void claim(int level) throws Exception {
         var bytes = new ByteArrayOutputStream();
         var output = CodedOutputStream.newInstance(bytes);
-        output.writeUInt32(15, level);
+        output.writeUInt32(9, level);
         output.flush();
-        router.handle(session, CAPTURED_OPCODE, new byte[0], bytes.toByteArray());
+        router.handle(session, REQUEST_OPCODE, new byte[0], bytes.toByteArray());
     }
 
     private void route(String hex) {
-        router.handle(session, CAPTURED_OPCODE, new byte[0], HexFormat.of().parseHex(hex));
+        router.handle(session, REQUEST_OPCODE, new byte[0], HexFormat.of().parseHex(hex));
     }
 
     private TakePlayerLevelRewardRsp reply() throws Exception {
@@ -203,16 +239,22 @@ final class PlayerLevelRewardClaimTest {
     }
 
     private static final class RecordingInventory extends Inventory {
-        List<List<ItemParamData>> grants;
+        List<List<GameItem>> grants;
+        boolean refuse;
 
         private RecordingInventory() {
             super(null);
         }
 
         @Override
-        public void addItemParamDatas(Collection<ItemParamData> items, ActionReason reason) {
+        public InventoryAddResult addItems(Collection<GameItem> items, ActionReason reason) {
             assertEquals(ActionReason.PlayerUpgradeReward, reason);
+            if (refuse) return InventoryAddResult.rejected(items, InventoryAddResult.Status.CAPACITY_FULL);
             grants.add(List.copyOf(items));
+            return new InventoryAddResult(items.stream()
+                    .map(item -> new InventoryAddResult.Entry(item.getItemId(), item.getCount(),
+                            item.getCount(), InventoryAddResult.Status.ADDED))
+                    .toList());
         }
     }
 

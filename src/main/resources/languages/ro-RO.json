@@ -195,6 +195,8 @@
       "given_level": "Am dat %s cu nivelul %s %s %s ori la %.",
       "given_avatar": "Am dat %s cu nivelul %s la %s.",
       "giveall_success": "Am dat cu succes toate elementele.",
+      "giveall_partial": "Nu s-au putut livra %s obiecte. Verifică spațiul din inventar și limitele de stivuire.",
+      "grant_failed": "Obiectul nu a putut fi livrat. Verifică obiectul și limitele inventarului.",
       "description": "îți dă un obiect ție sau jucătorului specificat. poate, de asemenea, să dea toate armele, avatarele și/sau materialele și poate construi artefacte personalizate."
     },
     "heal": {

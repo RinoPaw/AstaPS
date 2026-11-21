@@ -19,7 +19,7 @@ import java.util.HexFormat;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/** Pins descriptor-based 7.1 Java generation against the protobuf runtime used by AstaPS. */
+/** Pins descriptor-based 7.2 Java generation against the protobuf runtime used by AstaPS. */
 public final class ProtocolGenerationTest {
     @Test
     public void generatedMessagesKeepDescriptorsAndRoundTrip() throws Exception {
@@ -49,7 +49,7 @@ public final class ProtocolGenerationTest {
         assertEquals("AbilityMetaUpdateTpsWeaponAmmunition.proto", ammunitionDescriptor.getName());
         assertEquals("TpsWeaponAccessoryInfo.proto", ammunitionDescriptor.getDependencies().get(2).getName());
         assertEquals(
-                7,
+                6,
                 ammunitionDescriptor
                         .getDependencies()
                         .get(2)
@@ -57,15 +57,15 @@ public final class ProtocolGenerationTest {
                         .findFieldByName("ammunition_type")
                         .getNumber());
 
-        assertEquals(37, AvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
+        assertEquals(20000, AvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
         assertEquals(
-                31,
+                20000,
                 SceneAvatarInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
         assertEquals(
-                382,
+                20000,
                 SceneTeamAvatar.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
         assertEquals(
-                13,
+                20000,
                 AvatarEnterSceneInfo.getDescriptor().findFieldByName("tps_weapon_list").getNumber());
         assertEquals(
                 12,
@@ -76,13 +76,13 @@ public final class ProtocolGenerationTest {
 
     @Test
     public void activityMessagesUseTheClientFieldNumbers() throws Exception {
-        assertEquals(186, PacketOpcodes.GetActivityInfoReq);
+        assertEquals(22947, PacketOpcodes.GetActivityInfoReq);
 
-        // What a 7.1 client sends for activities 5001 and 5003: packed field 14.
-        var request = GetActivityInfoReq.parseFrom(HexFormat.of().parseHex("720489278b27"));
+        // Activity IDs 5001 and 5003 on the 7.2 packed field 5.
+        var request = GetActivityInfoReq.parseFrom(HexFormat.of().parseHex("2a0489278b27"));
         assertEquals(List.of(5001, 5003), request.getActivityIdListList());
 
         assertEquals(
-                1917, ActivityInfo.getDescriptor().findFieldByName("meet_cond_list").getNumber());
+                20002, ActivityInfo.getDescriptor().findFieldByName("meet_cond_list").getNumber());
     }
 }

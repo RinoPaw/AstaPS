@@ -14,31 +14,31 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class AdventureRankRequestSchemaTest {
     @Test
-    void canonicalDescriptorUsesCapturedFieldAndUnsignedType() {
+    void canonicalDescriptorUsesNativeFieldAndUnsignedType() {
         var field = TakePlayerLevelRewardReq.getDescriptor().findFieldByName("level");
-        assertEquals(15, field.getNumber());
+        assertEquals(9, field.getNumber());
         assertEquals(FieldDescriptor.Type.UINT32, field.getType());
-        assertEquals(7321, PacketOpcodes.TakePlayerLevelRewardReq);
+        assertEquals(8154, PacketOpcodes.TakePlayerLevelRewardReq);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {2, 3, 4})
-    void decodesCapturedKatheryneRequest(int level) throws Exception {
-        byte[] captured = {(byte) 0x78, (byte) level};
-        assertEquals(level, TakePlayerLevelRewardReq.parseFrom(captured).getLevel());
+    void decodesNativeKatheryneRequest(int level) throws Exception {
+        byte[] wire = {(byte) 0x48, (byte) level};
+        assertEquals(level, TakePlayerLevelRewardReq.parseFrom(wire).getLevel());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {2, 3, 4})
-    void writesTheCapturedWireLayout(int level) {
-        byte[] captured = {(byte) 0x78, (byte) level};
+    void writesTheNativeWireLayout(int level) {
+        byte[] wire = {(byte) 0x48, (byte) level};
         assertArrayEquals(
-                captured,
+                wire,
                 TakePlayerLevelRewardReq.newBuilder().setLevel(level).build().toByteArray());
     }
 
     @Test
-    void staleFieldElevenIsNotTheCanonicalLevel() throws Exception {
-        assertEquals(0, TakePlayerLevelRewardReq.parseFrom(new byte[] {0x58, 0x03}).getLevel());
+    void staleFieldFifteenIsNotTheCanonicalLevel() throws Exception {
+        assertEquals(0, TakePlayerLevelRewardReq.parseFrom(new byte[] {0x78, 0x03}).getLevel());
     }
 }

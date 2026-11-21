@@ -195,6 +195,8 @@
       "given_level": "%s avec le niveau %s %s fois à %s.",
       "given_avatar": "%s avec le niveau %s a été donné à %s.",
       "giveall_success": "Tous les objet ont été donnés avec succès.",
+      "giveall_partial": "%s objets n’ont pas pu être remis. Vérifiez la capacité de l’inventaire et la limite des piles.",
+      "grant_failed": "L’objet n’a pas pu être remis. Vérifiez l’objet et les limites de l’inventaire.",
       "description": "Donne un objet au joueur spécifié"
     },
     "heal": {

@@ -19,11 +19,11 @@ final class SnezhnayaTrainProtocolTest {
     }
 
     @Test
-    void opcodesMatchTheCapture() {
-        assertEquals(3893, PacketOpcodes.SnezhnayaTrainCallReq);
-        assertEquals(26580, PacketOpcodes.SnezhnayaTrainCallNotify);
-        assertEquals(23234, PacketOpcodes.SnezhnayaTrainStateNotify);
-        assertEquals(28390, PacketOpcodes.SnezhnayaTrainSetRouteReq);
+    void keepsUnverifiedSevenTwoRoutesDisabled() {
+        assertEquals(0, PacketOpcodes.SnezhnayaTrainCallReq);
+        assertEquals(0, PacketOpcodes.SnezhnayaTrainCallNotify);
+        assertEquals(0, PacketOpcodes.SnezhnayaTrainStateNotify);
+        assertEquals(0, PacketOpcodes.SnezhnayaTrainSetRouteReq);
     }
 
     @Test

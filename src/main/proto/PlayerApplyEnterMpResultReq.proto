@@ -3,6 +3,6 @@ syntax = "proto3";
 option java_package = "emu.grasscutter.net.proto";
 
 message PlayerApplyEnterMpResultReq {
-  bool is_agreed = 4;
-  uint32 apply_uid = 8;
+  uint32 apply_uid = 10;
+  bool is_agreed = 14;
 }

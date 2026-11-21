@@ -13,18 +13,19 @@ import emu.grasscutter.server.packet.send.PacketAvatarDataNotify;
 import emu.grasscutter.server.packet.send.PacketOpenStateUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketSceneAreaUnlockNotify;
 import emu.grasscutter.server.packet.send.PacketScenePointUnlockNotify;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
+import emu.grasscutter.server.packet.send.SceneAreaVisibility;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Command(
         label = "unlock",
         permission = "player.unlockall",
         permissionTargeted = "player.unlockall.others")
 public final class UnlockAllCommand implements CommandHandler {
-    private static final List<Integer> SCENE_AREAS = IntStream.range(1, 1000).boxed().toList();
 
     @Override
     public CommandLine createCommandLine(Player sender, Player targetPlayer) {
@@ -86,7 +87,9 @@ public final class UnlockAllCommand implements CommandHandler {
                     new PacketSceneAreaUnlockNotify(
                             currentScene, targetPlayer.getUnlockedSceneAreas(currentScene)));
 
-            GameData.getAvatarFlycloakDataMap().keySet().forEach(targetPlayer.getFlyCloakList()::add);
+            GameData.getAvatarFlycloakDataMap()
+                    .keySet()
+                    .forEach(targetPlayer.getFlyCloakList()::add);
             GameData.getAvatarTraceEffectDataMap()
                     .keySet()
                     .forEach(targetPlayer.getTraceEffectList()::add);
@@ -113,18 +116,23 @@ public final class UnlockAllCommand implements CommandHandler {
 
             // Scene tags are intentionally left unchanged.
             // Many tags represent mutually exclusive quest/activity world states. Enabling all of
-            // them simultaneously can make the client load incompatible terrain variants and produce
+            // them simultaneously can make the client load incompatible terrain variants and
+            // produce
             // missing ground/collision. Use /tag reset or /tag add <id> explicitly instead.
 
             targetPlayer.save();
 
             CommandOutput.sendMessage(
-                    sender, translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
+                    sender,
+                    translate(sender, "commands.unlockall.success", targetPlayer.getNickname()));
             CommandOutput.sendMessage(sender, "Scene tags left unchanged.");
         }
     }
+
     enum PointCategory {
-        WAYPOINT, STATUE, OTHER
+        WAYPOINT,
+        STATUE,
+        OTHER
     }
 
     static PointCategory classifyPoint(PointData data) {
@@ -153,10 +161,13 @@ public final class UnlockAllCommand implements CommandHandler {
                 var entry = GameData.getScenePointEntryById(sceneId, pointId);
                 PointData data = entry == null ? null : entry.getPointData();
                 if (!force) {
+                    if (player.isScenePointForceLocked(sceneId, pointId)) continue;
                     if (data == null || data.isForbidSimpleUnlock()) continue;
                     if ("SceneBuildingPoint".equals(data.getType()) && !data.isUnlocked()) continue;
                 }
-                if (!unlocked.add(pointId)) continue;
+                if (force) player.getForceLockedScenePoints(sceneId).remove(pointId);
+                boolean added = unlocked.add(pointId);
+                if (!added) continue;
                 switch (classifyPoint(data)) {
                     case WAYPOINT -> waypoints++;
                     case STATUE -> statues++;
@@ -164,10 +175,11 @@ public final class UnlockAllCommand implements CommandHandler {
                 }
             }
             var unlockedAreas = player.getUnlockedSceneAreas(sceneId);
-            for (int area : SCENE_AREAS) {
+            for (int area : SceneAreaVisibility.configuredAreas(sceneId)) {
                 if (unlockedAreas.add(area)) areaFlags++;
             }
         }
+        if (player.getSotsManager() != null) player.getSotsManager().refreshNearbyStatueInteractions();
         return new MapUnlockResult(waypoints, statues, otherPoints, areaFlags);
     }
 
@@ -188,20 +200,28 @@ public final class UnlockAllCommand implements CommandHandler {
         public void run() {
             MapUnlockResult result = unlockMap(targetPlayer, force);
             for (int sceneId : GameData.getScenePointsPerScene().keySet()) {
-                targetPlayer.sendPacket(new PacketScenePointUnlockNotify(
-                        sceneId, targetPlayer.getUnlockedScenePoints(sceneId)));
-                targetPlayer.sendPacket(new PacketSceneAreaUnlockNotify(
-                        sceneId, targetPlayer.getUnlockedSceneAreas(sceneId)));
+                targetPlayer.sendPacket(
+                        new PacketScenePointUnlockNotify(
+                                sceneId, targetPlayer.getUnlockedScenePoints(sceneId)));
+                targetPlayer.sendPacket(
+                        new PacketSceneAreaUnlockNotify(
+                                sceneId, targetPlayer.getUnlockedSceneAreas(sceneId)));
             }
             targetPlayer.save();
-            CommandOutput.sendMessage(sender,
-                    "Unlocked " + result.totalPoints() + " new map point(s): "
-                            + result.waypoints() + " waypoint(s), "
-                            + result.statues() + " statue(s), "
-                            + result.otherPoints() + " other point(s); "
-                            + result.areaFlags() + " new area flag(s)."
+            CommandOutput.sendMessage(
+                    sender,
+                    "Unlocked "
+                            + result.totalPoints()
+                            + " new map point(s): "
+                            + result.waypoints()
+                            + " waypoint(s), "
+                            + result.statues()
+                            + " statue(s), "
+                            + result.otherPoints()
+                            + " other point(s); "
+                            + result.areaFlags()
+                            + " new area flag(s)."
                             + (force ? " Quest-protected points included." : ""));
         }
     }
-
 }

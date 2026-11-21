@@ -28,7 +28,7 @@ final class ProtoCommandTest {
         assertDoesNotThrow(() -> command.parseArgs("loops", "off"));
         assertDoesNotThrow(() -> command.parseArgs("whitelist", "add", "123"));
         assertDoesNotThrow(() -> command.parseArgs("blacklist", "remove", "123"));
-        assertDoesNotThrow(() -> command.parseArgs("info", "27581"));
+        assertDoesNotThrow(() -> command.parseArgs("info", "2060"));
     }
 
     @Test
@@ -73,21 +73,21 @@ final class ProtoCommandTest {
 
     @Test
     void protoInfoFormatsKnownOpcodeAndMessageNames() {
-        String byOpcode = ProtoCommand.formatProtoInfo("27581");
-        assertTrue(byOpcode.contains("Opcode: 27581"));
+        String byOpcode = ProtoCommand.formatProtoInfo("2060");
+        assertTrue(byOpcode.contains("Opcode: 2060"));
         assertTrue(byOpcode.contains("Name: EvtBulletDeactiveNotify"));
         assertTrue(byOpcode.contains("message EvtBulletDeactiveNotify {\n"
-                + "  Vector disappear_pos = 2;\n"
-                + "  uint32 entity_id = 12;\n"
-                + "  ForwardType forward_type = 13;\n}"));
+                + "  Vector disappear_pos = 1;\n"
+                + "  uint32 entity_id = 5;\n"
+                + "  ForwardType forward_type = 9;\n}"));
 
         String byMessageName = ProtoCommand.formatProtoInfo("ForgeQueueData");
         assertTrue(byMessageName.contains("Opcode: UNKNOWN"));
         assertTrue(byMessageName.contains("Name: ForgeQueueData"));
         assertTrue(byMessageName.contains("message ForgeQueueData {\n"
-                + "  uint32 next_finish_timestamp = 7;\n"
-                + "  uint32 finish_count = 10;\n"
-                + "  uint32 unfinish_count = 3;"));
+                + "  uint32 next_finish_timestamp = 20000;\n"
+                + "  uint32 finish_count = 3;\n"
+                + "  uint32 unfinish_count = 20001;"));
     }
 
     @Test

@@ -71,7 +71,7 @@ public final class AvatarStatePersist {
                 avatar.setCurrentEnergy(f2);
             }
             if ((f = fArray[2]) > 0.0f) {
-                avatar.setFightProperty(FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY, f);
+                avatar.setFightProperty(FightProperty.FIGHT_PROP_CUR_NATLAN_HP, f);
                 avatar.setNyxValue(f);
             }
         }

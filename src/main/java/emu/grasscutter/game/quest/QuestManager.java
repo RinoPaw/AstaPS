@@ -31,6 +31,7 @@ public final class QuestManager extends BasePlayerManager {
 
     private long lastHourCheck = 0;
     private long lastDayCheck = 0;
+    private transient long nextRangeCheckTime;
 
     // One thread, not four: quest events mutate shared quest state and racing them corrupted it.
     public static final ExecutorService eventExecutor =
@@ -377,6 +378,12 @@ public final class QuestManager extends BasePlayerManager {
         this.checkTimeVars();
         // trigger game time tick for quests
         this.queueEvent(QuestContent.QUEST_CONTENT_GAME_TIME_TICK);
+        long now = System.currentTimeMillis();
+        var scene = this.getPlayer().getScene();
+        if (scene != null && now >= nextRangeCheckTime) {
+            nextRangeCheckTime = now + 1000;
+            this.queueEvent(QuestContent.QUEST_CONTENT_LEAVE_SCENE_RANGE, scene.getId());
+        }
     }
 
     private void checkTimeVars() {
@@ -486,6 +493,10 @@ public final class QuestManager extends BasePlayerManager {
     }
 
     public void triggerQuestGlobalVarAction(int variable, int value) {
+        this.queueEvent(QuestContent.QUEST_CONTENT_QUEST_GLOBAL_VAR_EQUAL, variable);
+        this.queueEvent(QuestContent.QUEST_CONTENT_QUEST_GLOBAL_VAR_NOT_EQUAL, variable);
+        this.queueEvent(QuestContent.QUEST_CONTENT_QUEST_GLOBAL_VAR_GREATER, variable);
+        this.queueEvent(QuestContent.QUEST_CONTENT_QUEST_GLOBAL_VAR_LESS, variable);
         this.queueEvent(QuestCond.QUEST_COND_QUEST_GLOBAL_VAR_EQUAL, variable, value);
         this.queueEvent(QuestCond.QUEST_COND_QUEST_GLOBAL_VAR_GREATER, variable, value);
         this.queueEvent(QuestCond.QUEST_COND_QUEST_GLOBAL_VAR_LESS, variable, value);
@@ -541,8 +552,14 @@ public final class QuestManager extends BasePlayerManager {
     }
 
     public GameMainQuest addMainQuest(QuestData questConfig) {
+        return addMainQuest(questConfig, false);
+    }
+
+    private GameMainQuest addMainQuest(QuestData questConfig, boolean byCommand) {
         var mainQuest = new GameMainQuest(getPlayer(), questConfig.getMainId());
+        mainQuest.setAddedByCommand(byCommand);
         this.getMainQuests().put(mainQuest.getParentQuestId(), mainQuest);
+        if (byCommand) mainQuest.save();
         this.getPlayer().sendPacket(new PacketFinishedParentQuestUpdateNotify(mainQuest));
 
         return mainQuest;
@@ -573,19 +590,25 @@ public final class QuestManager extends BasePlayerManager {
 
         // Create main quest if it doesnt exist
         if (mainQuest == null) {
-            mainQuest = addMainQuest(questConfig);
-        }
-        if (byCommand && !mainQuest.isAddedByCommand()) {
+            var parentData = GameData.getMainQuestDataMap().get(questConfig.getMainId());
+            if (parentData == null || parentData.getSubQuests() == null
+                    || Arrays.stream(parentData.getSubQuests())
+                            .noneMatch(child -> child.getSubId() == questConfig.getSubId())) {
+                Grasscutter.getLogger().warn("Missing parent quest data for subquest {}", questConfig.getSubId());
+                return null;
+            }
+            mainQuest = addMainQuest(questConfig, byCommand);
+        } else if (byCommand && !mainQuest.isAddedByCommand()) {
             mainQuest.setAddedByCommand(true);
             mainQuest.save();
+            this.getPlayer().sendPacket(new PacketFinishedParentQuestUpdateNotify(mainQuest));
         }
 
         // Sub quest
         var quest = mainQuest.getChildQuestById(questConfig.getSubId());
+        if (quest == null) return null;
         // Forcefully start
         quest.start();
-        // Check conditions.
-        this.checkQuestAlreadyFulfilled(quest);
 
         return quest;
     }
@@ -735,6 +758,14 @@ public final class QuestManager extends BasePlayerManager {
      * @param quest The ID of the quest.
      */
     public void checkQuestAlreadyFulfilled(GameQuest quest) {
+        java.util.stream.Stream.concat(
+                        quest.getQuestData().getFinishCond().stream(),
+                        quest.getQuestData().getFailCond().stream())
+                .filter(
+                        c ->
+                                emu.grasscutter.game.quest.content.ContentCurrentState.checkOnStart(
+                                        c.getType()))
+                .forEach(c -> queueEvent(c.getType()));
         if (isQuestingActive()) LiyueRescuePlotRecovery.replayReportedCompletion(quest);
         Grasscutter.getThreadPool()
                 .submit(
@@ -742,12 +773,10 @@ public final class QuestManager extends BasePlayerManager {
                             for (var condition : quest.getQuestData().getFinishCond()) {
                                 switch (condition.getType()) {
                                     case QUEST_CONTENT_OBTAIN_ITEM, QUEST_CONTENT_ITEM_LESS_THAN -> {
-                                        // check if we already own enough of the item
-                                        var item = getPlayer().getInventory().getItemByGuid(condition.getParam()[0]);
-                                        queueEvent(
-                                                condition.getType(),
-                                                condition.getParam()[0],
-                                                item != null ? item.getCount() : 0);
+                                        int[] params = condition.getParam();
+                                        if (params != null && params.length > 0) {
+                                            queueEvent(condition.getType(), params[0]);
+                                        }
                                     }
                                     case QUEST_CONTENT_UNLOCK_TRANS_POINT -> {
                                         var scenePoints =

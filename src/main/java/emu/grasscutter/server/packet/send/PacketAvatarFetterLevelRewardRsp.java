@@ -6,6 +6,11 @@ import emu.grasscutter.net.proto.AvatarFetterLevelRewardRspOuterClass.AvatarFett
 public class PacketAvatarFetterLevelRewardRsp extends BasePacket {
 
     public PacketAvatarFetterLevelRewardRsp(long guid, int fetterLevel, int rewardId) {
+        this(guid, fetterLevel, java.util.List.of(rewardId));
+    }
+
+    public PacketAvatarFetterLevelRewardRsp(
+            long guid, int fetterLevel, java.util.List<Integer> rewardIds) {
         super(PacketOpcodes.AvatarFetterLevelRewardRsp);
 
         AvatarFetterLevelRewardRsp proto =
@@ -13,7 +18,8 @@ public class PacketAvatarFetterLevelRewardRsp extends BasePacket {
                         .setAvatarGuid(guid)
                         .setFetterLevel(fetterLevel)
                         .setRetcode(0)
-                        .setRewardId(rewardId)
+                        .setRewardId(rewardIds.size() == 1 ? rewardIds.get(0) : 0)
+                        .addAllRewardIdList(rewardIds)
                         .build();
 
         this.setData(proto);

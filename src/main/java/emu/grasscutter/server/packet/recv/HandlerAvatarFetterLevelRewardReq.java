@@ -8,56 +8,78 @@ import emu.grasscutter.net.packet.*;
 import emu.grasscutter.net.proto.AvatarFetterLevelRewardReqOuterClass.AvatarFetterLevelRewardReq;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.*;
-import java.util.ArrayList;
 
-/**
- * Claims a friendship reward. Besides the level 10 name card, some avatars have an earlier one
- * (Zibai and Linnea at level 1, Aino at level 6), and the client asks for each by its level.
- */
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+
+import java.util.*;
+
 @Opcodes(PacketOpcodes.AvatarFetterLevelRewardReq)
 public class HandlerAvatarFetterLevelRewardReq extends PacketHandler {
+    static Map<Integer, Integer> selectRewards(
+            Int2IntMap configured, int currentLevel, int requestedLevel, Set<Integer> claimed) {
+        var rewards = new TreeMap<Integer, Integer>();
+        configured.forEach(
+                (level, rewardId) -> {
+                    if (level > 0
+                            && level <= currentLevel
+                            && rewardId > 0
+                            && (requestedLevel == 0 || requestedLevel == level)
+                            && (claimed == null || !claimed.contains(level))) {
+                        rewards.put(level, rewardId);
+                    }
+                });
+        return rewards;
+    }
+
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        AvatarFetterLevelRewardReq req = AvatarFetterLevelRewardReq.parseFrom(payload);
+        var req = AvatarFetterLevelRewardReq.parseFrom(payload);
         var player = session.getPlayer();
-        long avatarGuid = req.getAvatarGuid();
-        int fetterLevel = req.getFetterLevel();
-
-        var avatar = player.getAvatars().getAvatarByGuid(avatarGuid);
-        int rewardId =
-                avatar == null || avatar.getAvatarData() == null
-                        ? 0
-                        : avatar.getAvatarData().getFetterRewards().get(fetterLevel);
-        var reward = GameData.getRewardDataMap().get(rewardId);
-        if (avatar == null || reward == null || avatar.getFetterLevel() < fetterLevel) {
-            Grasscutter.getLogger()
-                    .warn(
-                            "[Fetter] uid={} cannot claim level {} reward of avatar guid {}"
-                                    + " (reward {}, level {})",
-                            player.getUid(),
-                            fetterLevel,
-                            avatarGuid,
-                            rewardId,
-                            avatar == null ? -1 : avatar.getFetterLevel());
-            session.send(new PacketAvatarFetterLevelRewardRsp(avatarGuid, fetterLevel));
+        long guid = req.getAvatarGuid();
+        int level = req.getFetterLevel();
+        var avatar = player.getAvatars().getAvatarByGuid(guid);
+        if (avatar == null || avatar.getAvatarData() == null || level < 0) {
+            session.send(new PacketAvatarFetterLevelRewardRsp(guid, level));
             return;
         }
 
-        if (!avatar.getRewardedFetterLevels().contains(fetterLevel)) {
-            var items = new ArrayList<GameItem>();
-            for (var param : reward.getAllRewardItems()) {
-                if (param.getId() <= 0 || param.getCount() <= 0) continue;
-                // Single-copy rewards (Zibai's carriage box, Linnea's widget and codex pages) the
-                // player already owns would hit the stack limit and refuse the whole claim.
-                var data = GameData.getItemDataMap().get(param.getId());
-                if (data != null
-                        && data.getStackLimit() == 1
-                        && player.getInventory().getItemCountById(param.getId()) > 0) {
-                    continue;
-                }
-                items.add(new GameItem(param.getId(), param.getCount()));
+        synchronized (avatar) {
+            var configured = avatar.getAvatarData().getFetterRewards();
+            if (configured.isEmpty()
+                    || (level != 0
+                            && (!configured.containsKey(level)
+                                    || avatar.getFetterLevel() < level))) {
+                session.send(new PacketAvatarFetterLevelRewardRsp(guid, level));
+                return;
             }
-            // All or nothing: a full bag delivers none, so keep the level claimable for a retry.
+            // 7.2 的按钮只发 GUID，等级 0 表示领取所有已达标奖励。
+            var rewards =
+                    selectRewards(
+                            configured,
+                            avatar.getFetterLevel(),
+                            level,
+                            avatar.getRewardedFetterLevels());
+            var items = new ArrayList<GameItem>();
+            for (int rewardId : rewards.values()) {
+                var reward = GameData.getRewardDataMap().get(rewardId);
+                if (reward == null) {
+                    Grasscutter.getLogger()
+                            .warn(
+                                    "[Fetter] missing reward {} for avatar {}",
+                                    rewardId,
+                                    avatar.getAvatarId());
+                    session.send(new PacketAvatarFetterLevelRewardRsp(guid, level));
+                    return;
+                }
+                for (var param : reward.getAllRewardItems()) {
+                    if (param.getId() <= 0 || param.getCount() <= 0) continue;
+                    var data = GameData.getItemDataMap().get(param.getId());
+                    if (data != null
+                            && data.getStackLimit() == 1
+                            && player.getInventory().getItemCountById(param.getId()) > 0) continue;
+                    items.add(new GameItem(param.getId(), param.getCount()));
+                }
+            }
             var added =
                     items.isEmpty()
                             ? null
@@ -65,30 +87,24 @@ public class HandlerAvatarFetterLevelRewardReq extends PacketHandler {
             if (added != null && !added.allAccepted()) {
                 Grasscutter.getLogger()
                         .warn(
-                                "[Fetter] uid={} level {} reward {} of avatar {} not admitted: {}",
+                                "[Fetter] uid={} avatar={} reward refused: {}",
                                 player.getUid(),
-                                fetterLevel,
-                                rewardId,
                                 avatar.getAvatarId(),
                                 added.entries());
-                session.send(new PacketAvatarFetterLevelRewardRsp(avatarGuid, fetterLevel));
+                session.send(new PacketAvatarFetterLevelRewardRsp(guid, level));
                 return;
             }
-            avatar.addRewardedFetterLevel(fetterLevel);
-            avatar.save();
-            if (items.stream().anyMatch(item -> item.getItemId() == avatar.getNameCardId())) {
-                player.sendPacket(new PacketUnlockNameCardNotify(avatar.getNameCardId()));
+            if (!rewards.isEmpty()) {
+                rewards.keySet().forEach(avatar::addRewardedFetterLevel);
+                avatar.save();
+                if (items.stream().anyMatch(item -> item.getItemId() == avatar.getNameCardId())) {
+                    player.sendPacket(new PacketUnlockNameCardNotify(avatar.getNameCardId()));
+                }
             }
-            Grasscutter.getLogger()
-                    .debug(
-                            "[Fetter] uid={} claimed level {} reward {} of avatar {}",
-                            player.getUid(),
-                            fetterLevel,
-                            rewardId,
-                            avatar.getAvatarId());
+            session.send(new PacketAvatarFetterDataNotify(avatar));
+            session.send(
+                    new PacketAvatarFetterLevelRewardRsp(
+                            guid, level, new ArrayList<>(rewards.values())));
         }
-
-        session.send(new PacketAvatarFetterDataNotify(avatar));
-        session.send(new PacketAvatarFetterLevelRewardRsp(avatarGuid, fetterLevel, rewardId));
     }
 }

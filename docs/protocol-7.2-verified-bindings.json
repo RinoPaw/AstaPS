@@ -1942,11 +1942,6 @@
   ],
   "main_request_identities_with_server_binding_withheld": [
     {
-      "name": "PlayerApplyEnterMpResultReq",
-      "cmd": 4544,
-      "reason": "The corresponding current response identity/payload still needs verification."
-    },
-    {
       "name": "PlayerApplyEnterHomeResultReq",
       "cmd": 7623,
       "reason": "The corresponding current response identity/payload still needs verification."
@@ -1964,8 +1959,8 @@
   ],
   "disabled_opcode_source_audit": {
     "scope": "All static Java source references, excluding the constant table and naming utility; references do not prove runtime reachability.",
-    "source_referenced_zero_constants": 125,
-    "zero_handler_annotations": 49,
+    "source_referenced_zero_constants": 124,
+    "zero_handler_annotations": 48,
     "records": [
       {
         "name": "AddBackupAvatarTeamReq",
@@ -2616,21 +2611,8 @@
         ]
       },
       {
-        "name": "PlayerApplyEnterMpResultReq",
-        "references": [
-          {
-            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerApplyEnterMpResultReq.java",
-            "line": 9
-          }
-        ]
-      },
-      {
         "name": "PlayerApplyEnterMpResultRsp",
         "references": [
-          {
-            "path": "src/main/java/emu/grasscutter/server/packet/recv/HandlerPlayerApplyEnterMpResultReq.java",
-            "line": 53
-          },
           {
             "path": "src/main/java/emu/grasscutter/server/packet/send/PacketPlayerApplyEnterMpResultRsp.java",
             "line": 9

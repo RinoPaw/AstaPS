@@ -227,7 +227,7 @@ public final class PacketOpcodes {
     public static final int FishCastRodReq = 1654; // 7.1: 7175
     public static final int ProudSkillUpgradeReq = 27742; // 7.1: 3860
     public static final int _PullStrangerChatRsp = 23428; // 7.1: 2592
-    public static final int PlayerApplyEnterMpResultReq = 0; // 7.2 CmdId unknown (7.1: 28491)
+    public static final int PlayerApplyEnterMpResultReq = 4544; // 7.1: 28491
     // public static final int ELBGMJJCFMC = 27334;
     public static final int GlobalBuildingInfoNotify = 0; // 7.2 CmdId unknown (7.1: 26244)
     // public static final int HPGAEOBJDAK = 4939;

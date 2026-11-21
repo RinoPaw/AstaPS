@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import emu.grasscutter.ServerResourceFixture;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.RewardData;
+import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.Inventory;
+import emu.grasscutter.game.inventory.InventoryAddResult;
 import emu.grasscutter.game.player.InvestigationHandbookHelper;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.PlayerProgress;
@@ -31,7 +34,7 @@ import java.util.stream.Stream;
 
 /**
  * Whole-payload validation at the existing handlers, without accounts or external resources.
- * Chapter claims carry the chapter id on field 6 (7.1 TakeInvestigationRewardReq, CmdId 8841).
+ * The 7.2 chapter and target requests use fields 3 and 15.
  */
 @ExtendWith(ServerResourceFixture.class)
 final class InvestigationRewardPayloadValidationTest {
@@ -46,6 +49,7 @@ final class InvestigationRewardPayloadValidationTest {
     private Map<Integer, List<Object>> savedTargets;
     private boolean oldLoaded;
     private RewardData oldReward;
+    private ItemData oldPrimogem;
 
     private static Field helperField(String name) throws Exception {
         var field = InvestigationHandbookHelper.class.getDeclaredField(name);
@@ -78,6 +82,9 @@ final class InvestigationRewardPayloadValidationTest {
                                 targetClass);
         targets.put(CHAPTER, List.of(target));
         targetsById.put(TARGET, target);
+        var primogem = new Gson().fromJson(
+                "{\"id\":201,\"itemType\":\"ITEM_VIRTUAL\"}", ItemData.class);
+        oldPrimogem = GameData.getItemDataMap().put(201, primogem);
         oldReward = GameData.getRewardDataMap().get(REWARD);
         var reward = new RewardData();
         reward.rewardId = REWARD;
@@ -114,6 +121,8 @@ final class InvestigationRewardPayloadValidationTest {
         targetsById.clear();
         targetsById.putAll(savedTargetsById);
         helperField("loaded").setBoolean(null, oldLoaded);
+        if (oldPrimogem == null) GameData.getItemDataMap().remove(201);
+        else GameData.getItemDataMap().put(201, oldPrimogem);
         if (oldReward == null) GameData.getRewardDataMap().remove(REWARD);
         else GameData.getRewardDataMap().put(REWARD, oldReward);
     }
@@ -153,7 +162,7 @@ final class InvestigationRewardPayloadValidationTest {
                         "{id}",
                         "0802{id}1003",
                         "0a020001{id}1501020304",
-                        "0b10030c{id}190102030405060708",
+                        "0b10030c{id}210102030405060708",
                         "{zero}{id}",
                         "{id}{zero}{id}");
         return Stream.of(false, true)
@@ -164,16 +173,16 @@ final class InvestigationRewardPayloadValidationTest {
     }
 
     private static String payload(boolean target, String template) {
-        return template.replace("{id}", target ? "48e1d403" : "30914e")
-                .replace("{tag}", target ? "48" : "30")
-                .replace("{zero}", target ? "4800" : "3000")
+        return template.replace("{id}", target ? "78e1d403" : "18914e")
+                .replace("{tag}", target ? "78" : "18")
+                .replace("{zero}", target ? "7800" : "1800")
                 // A length-delimited ID is deliberately followed by an otherwise valid varint.
-                .replace("{wrong}", target ? "4ae1d403" : "32914e")
-                .replace("{fixed64}", (target ? "49" : "31") + "0000000000000000")
-                .replace("{fixed32}", (target ? "4d" : "35") + "00000000")
-                .replace("{group}", target ? "4b4c" : "3334")
-                .replace("{invalid}", target ? "4e" : "36")
-                .replace("{end}", target ? "4c" : "34");
+                .replace("{wrong}", target ? "7ae1d403" : "1a914e")
+                .replace("{fixed64}", (target ? "79" : "19") + "0000000000000000")
+                .replace("{fixed32}", (target ? "7d" : "1d") + "00000000")
+                .replace("{group}", target ? "7b7c" : "1b1c")
+                .replace("{invalid}", target ? "7e" : "1e")
+                .replace("{end}", target ? "7c" : "1c");
     }
 
     @ParameterizedTest(name = "target={0}, malformed={1}")
@@ -216,6 +225,26 @@ final class InvestigationRewardPayloadValidationTest {
         assertNotEquals(0, reply[1]);
         assertTrue(player.inventory.grants.isEmpty());
         assertEquals(0, player.saves);
+    }
+
+    @ParameterizedTest
+    @MethodSource("claimKinds")
+    void refusedGrantCanBeRetriedWithoutDuplicateRewards(boolean target) throws Exception {
+        player.progress.setInvestigationTargetProgress(TARGET, 1);
+        player.inventory.refuse = true;
+        var hex = payload(target, "{id}");
+        assertNotEquals(0, claim(target, hex)[1]);
+        assertEquals(0, player.progress.getInvestigationChapterState(CHAPTER));
+        assertEquals(0, player.progress.getInvestigationTargetState(TARGET));
+        assertEquals(0, player.saves);
+
+        player.inventory.refuse = false;
+        session.sent.clear();
+        assertEquals(0, claim(target, hex)[1]);
+        session.sent.clear();
+        assertEquals(0, claim(target, hex)[1]);
+        assertEquals(1, player.inventory.grants.size());
+        assertEquals(1, player.saves);
     }
 
     private static Stream<Boolean> claimKinds() {
@@ -281,7 +310,8 @@ final class InvestigationRewardPayloadValidationTest {
     }
 
     private static final class RecordingInventory extends Inventory {
-        List<List<ItemParamData>> grants;
+        List<List<GameItem>> grants;
+        boolean refuse;
         ActionReason expectedReason;
 
         private RecordingInventory() {
@@ -289,9 +319,14 @@ final class InvestigationRewardPayloadValidationTest {
         }
 
         @Override
-        public void addItemParamDatas(Collection<ItemParamData> items, ActionReason reason) {
+        public InventoryAddResult addItems(Collection<GameItem> items, ActionReason reason) {
             assertEquals(expectedReason, reason);
+            if (refuse) return InventoryAddResult.rejected(items, InventoryAddResult.Status.CAPACITY_FULL);
             grants.add(List.copyOf(items));
+            return new InventoryAddResult(items.stream()
+                    .map(item -> new InventoryAddResult.Entry(item.getItemId(), item.getCount(),
+                            item.getCount(), InventoryAddResult.Status.ADDED))
+                    .toList());
         }
     }
 

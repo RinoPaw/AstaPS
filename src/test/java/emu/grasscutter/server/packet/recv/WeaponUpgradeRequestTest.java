@@ -57,8 +57,8 @@ import java.util.Map;
 @ExtendWith(ServerResourceFixture.class)
 @ResourceLock("GameData")
 final class WeaponUpgradeRequestTest {
-    private static final int UPGRADE_OPCODE = 21801;
-    private static final int PREVIEW_OPCODE = 7145;
+    private static final int UPGRADE_OPCODE = 5955;
+    private static final int PREVIEW_OPCODE = 20346;
     private static final int WEAPON_ID = 11501;
     private static final int SMALL_ORE = 104011;
     private static final int LARGE_ORE = 104013;
@@ -180,19 +180,19 @@ final class WeaponUpgradeRequestTest {
 
         assertEquals(1, player.packets.size());
         var packet = player.packets.get(0);
-        assertEquals(5849, packet.getOpcode());
+        assertEquals(104, packet.getOpcode());
         assertEquals(PacketOpcodes.CalcWeaponUpgradeReturnItemsRsp, packet.getOpcode());
         var rsp = CalcWeaponUpgradeReturnItemsRsp.parseFrom(packet.getData());
         assertEquals(TARGET, rsp.getTargetWeaponGuid());
         assertEquals(0, rsp.getRetcode());
         assertEquals(List.of(param(SMALL_ORE, 4)), rsp.getItemParamListList());
         var wire = UnknownFieldSet.parseFrom(packet.getData());
-        assertEquals(List.of(TARGET), wire.getField(10).getVarintList());
-        assertEquals(1, wire.getField(3).getLengthDelimitedList().size());
+        assertEquals(List.of(TARGET), wire.getField(5).getVarintList());
+        assertEquals(1, wire.getField(2).getLengthDelimitedList().size());
         assertEquals(
                 param(SMALL_ORE, 4),
-                ItemParam.parseFrom(wire.getField(3).getLengthDelimitedList().get(0)));
-        assertFalse(wire.hasField(6));
+                ItemParam.parseFrom(wire.getField(2).getLengthDelimitedList().get(0)));
+        assertFalse(wire.hasField(14));
         assertEquals(19, weapon.getLevel());
         assertEquals(500, weapon.getExp());
         assertEquals(18500, weapon.getTotalExp());
@@ -320,7 +320,7 @@ final class WeaponUpgradeRequestTest {
         assertEquals(newLevel, changed.getItemList(0).getEquip().getWeapon().getLevel());
         assertEquals(weapon.getExp(), changed.getItemList(0).getEquip().getWeapon().getExp());
         var packet = player.packets.get(1);
-        assertEquals(25465, packet.getOpcode());
+        assertEquals(26830, packet.getOpcode());
         var response = WeaponUpgradeRsp.parseFrom(packet.getData());
         assertEquals(0, response.getRetcode());
         assertEquals(TARGET, response.getTargetWeaponGuid());
@@ -328,16 +328,16 @@ final class WeaponUpgradeRequestTest {
         assertEquals(newLevel, response.getCurLevel());
         assertEquals(leftovers, response.getItemParamListList());
         var wire = UnknownFieldSet.parseFrom(packet.getData());
-        assertEquals(List.of(TARGET), wire.getField(10).getVarintList());
-        assertEquals(List.of((long) oldLevel), wire.getField(14).getVarintList());
-        assertEquals(List.of((long) newLevel), wire.getField(2).getVarintList());
-        assertEquals(leftovers.size(), wire.getField(4).getLengthDelimitedList().size());
+        assertEquals(List.of(TARGET), wire.getField(7).getVarintList());
+        assertEquals(List.of((long) oldLevel), wire.getField(4).getVarintList());
+        assertEquals(List.of((long) newLevel), wire.getField(5).getVarintList());
+        assertEquals(leftovers.size(), wire.getField(8).getLengthDelimitedList().size());
         for (int index = 0; index < leftovers.size(); index++) {
             assertEquals(
                     leftovers.get(index),
-                    ItemParam.parseFrom(wire.getField(4).getLengthDelimitedList().get(index)));
+                    ItemParam.parseFrom(wire.getField(8).getLengthDelimitedList().get(index)));
         }
-        assertFalse(wire.hasField(9));
+        assertFalse(wire.hasField(15));
     }
 
     // Independent of generated builders so a stale schema cannot make the request test pass.
@@ -345,20 +345,20 @@ final class WeaponUpgradeRequestTest {
             throws Exception {
         var bytes = new ByteArrayOutputStream();
         var out = CodedOutputStream.newInstance(bytes);
-        out.writeUInt64(preview ? 1 : 5, TARGET);
+        out.writeUInt64(preview ? 4 : 15, TARGET);
         if (!foods.isEmpty()) {
             var packed = new ByteArrayOutputStream();
             var foodOut = CodedOutputStream.newInstance(packed);
             for (long guid : foods) foodOut.writeUInt64NoTag(guid);
             foodOut.flush();
-            out.writeByteArray(preview ? 14 : 15, packed.toByteArray());
+            out.writeByteArray(2, packed.toByteArray());
         }
         var ore = new ByteArrayOutputStream();
         var oreOut = CodedOutputStream.newInstance(ore);
         oreOut.writeUInt32(1, oreId);
         oreOut.writeUInt32(2, count);
         oreOut.flush();
-        out.writeByteArray(preview ? 10 : 8, ore.toByteArray());
+        out.writeByteArray(preview ? 6 : 11, ore.toByteArray());
         out.flush();
         return bytes.toByteArray();
     }

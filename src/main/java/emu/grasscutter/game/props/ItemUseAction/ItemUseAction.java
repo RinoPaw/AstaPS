@@ -14,6 +14,7 @@ public class ItemUseAction {
             case ITEM_USE_ADD_WEAPON_EXP -> new ItemUseAddWeaponExp(useParam);
                 // Energy pickups
             case ITEM_USE_ADD_ALL_ENERGY -> new ItemUseAddAllEnergy(useParam);
+            case ITEM_USE_ADD_PHLOGISTON -> new ItemUseAddPhlogiston(useParam);
             case ITEM_USE_ADD_ELEM_ENERGY -> new ItemUseAddElemEnergy(useParam);
                 // Give items
             case ITEM_USE_ADD_ITEM -> new ItemUseAddItem(useParam);

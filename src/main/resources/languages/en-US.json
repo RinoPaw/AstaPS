@@ -195,6 +195,8 @@
       "given_level": "Given %s with level %s %s times to %s.",
       "given_avatar": "Given %s with level %s to %s.",
       "giveall_success": "Successfully gave all items.",
+      "giveall_partial": "%s requested items could not be delivered. Check inventory capacity and stack limits.",
+      "grant_failed": "The item grant was refused. Check the item and inventory limits.",
       "description": "Gives an item to you or the specified player. Can also give all weapons, avatars and/or materials, and can construct custom artifacts."
     },
     "heal": {

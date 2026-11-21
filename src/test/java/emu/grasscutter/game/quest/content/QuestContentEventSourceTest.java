@@ -41,4 +41,29 @@ final class QuestContentEventSourceTest {
         assertFalse(new ContentClearGroupMonster().execute(null, condition, "", 133004015));
         assertFalse(new ContentClearGroupMonster().execute(null, condition, ""));
     }
+
+    @Test
+    void gadgetStateConditionMatchesGroupConfigAndNewState() {
+        var condition = new QuestData.QuestContentCondition();
+        condition.setParam(new int[] {133707072, 72010});
+        condition.setParamStr("201");
+        var handler = new ContentGadgetStateChange();
+
+        assertTrue(handler.execute(null, condition, "", 133707072, 72010, 201));
+        assertFalse(handler.execute(null, condition, "", 133707002, 72010, 201));
+        assertFalse(handler.execute(null, condition, "", 133707072, 72011, 201));
+        assertFalse(handler.execute(null, condition, "", 133707072, 72010, 0));
+        assertFalse(handler.execute(null, condition, "", 133707072, 72010));
+    }
+
+    @Test
+    void unrelatedInventoryEventsDoNotEvaluateItemConditions() {
+        var condition = new QuestData.QuestContentCondition();
+        condition.setParam(new int[] {100305, 1});
+
+        assertFalse(new ContentObtainItem().execute(null, condition, "", 100313, 1));
+        assertFalse(new ContentItemLessThan().execute(null, condition, "", 100313, 1));
+        assertFalse(new ContentObtainItem().execute(null, condition, ""));
+        assertFalse(new ContentItemLessThan().execute(null, condition, ""));
+    }
 }

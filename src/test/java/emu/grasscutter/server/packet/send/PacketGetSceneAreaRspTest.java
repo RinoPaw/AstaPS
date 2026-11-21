@@ -1,44 +1,69 @@
 package emu.grasscutter.server.packet.send;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
+
 import emu.grasscutter.config.ConfigContainer;
+import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.excels.world.WorldAreaData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.proto.GetSceneAreaRspOuterClass.GetSceneAreaRsp;
 import emu.grasscutter.net.proto.GetScenePointRspOuterClass.GetScenePointRsp;
-import java.util.Set;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 @ResourceLock("mapFogEnabled")
 final class PacketGetSceneAreaRspTest {
     private boolean previousFogEnabled;
+    private Map<Integer, WorldAreaData> previousAreas;
 
     @BeforeEach
     void enableFog() {
         previousFogEnabled = GAME_OPTIONS.mapFogEnabled;
         GAME_OPTIONS.mapFogEnabled = true;
+        previousAreas = new HashMap<>(GameData.getWorldAreaDataMap());
+        GameData.getWorldAreaDataMap().clear();
+        for (var json :
+                new String[] {
+                    "{\"sceneID\":3,\"areaID1\":1,\"areaID2\":3}",
+                    "{\"sceneID\":4,\"areaID1\":25,\"areaID2\":26}"
+                }) {
+            var row = new Gson().fromJson(json, WorldAreaData.class);
+            GameData.getWorldAreaDataMap().put(row.getId(), row);
+        }
     }
 
     @AfterEach
     void restoreFog() {
         GAME_OPTIONS.mapFogEnabled = previousFogEnabled;
+        GameData.getWorldAreaDataMap().clear();
+        GameData.getWorldAreaDataMap().putAll(previousAreas);
     }
 
     @Test
     void fogIsEnabledByDefaultAndMissingSettingKeepsThatDefault() {
         assertTrue(new ConfigContainer.GameOptions().mapFogEnabled);
-        var missingSetting = new Gson().fromJson(
-                "{\"server\":{\"game\":{\"gameOptions\":{}}}}",
-                ConfigContainer.class);
+        var missingSetting =
+                new Gson()
+                        .fromJson(
+                                "{\"server\":{\"game\":{\"gameOptions\":{}}}}",
+                                ConfigContainer.class);
         assertTrue(missingSetting.server.game.gameOptions.mapFogEnabled);
-        var disabled = new Gson().fromJson(
-                "{\"server\":{\"game\":{\"gameOptions\":{\"mapFogEnabled\":false}}}}",
-                ConfigContainer.class);
+        var disabled =
+                new Gson()
+                        .fromJson(
+                                "{\"server\":{\"game\":{\"gameOptions\":{\"mapFogEnabled\":false}}}}",
+                                ConfigContainer.class);
         assertFalse(disabled.server.game.gameOptions.mapFogEnabled);
     }
 
@@ -70,14 +95,18 @@ final class PacketGetSceneAreaRspTest {
         assertEquals(Set.of(25), player.getUnlockedSceneAreas(4));
 
         player.getUnlockedScenePoints(3).add(7);
-        assertEquals(Set.of(1, 3, 7), Set.copyOf(
-                GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData())
-                        .getAreaIdListList()));
+        assertEquals(
+                Set.of(1, 3, 7),
+                Set.copyOf(
+                        GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData())
+                                .getAreaIdListList()));
 
         player.getForceLockedScenePoints(3).add(7);
-        assertEquals(Set.of(3, 7), Set.copyOf(
-                GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData())
-                        .getAreaIdListList()));
+        assertEquals(
+                Set.of(3, 7),
+                Set.copyOf(
+                        GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData())
+                                .getAreaIdListList()));
     }
 
     @Test
@@ -98,7 +127,7 @@ final class PacketGetSceneAreaRspTest {
         player.getUnlockedSceneAreas(3).add(1);
         GAME_OPTIONS.mapFogEnabled = false;
         var areas = GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData());
-        assertEquals(1000, areas.getAreaIdListCount());
+        assertEquals(Set.of(1, 3), Set.copyOf(areas.getAreaIdListList()));
         assertFalse(player.getUnlockedScenePoints(3).contains(7));
         assertEquals(Set.of(1), player.getUnlockedSceneAreas(3));
     }
@@ -112,19 +141,16 @@ final class PacketGetSceneAreaRspTest {
         for (boolean enabled : new boolean[] {true, false, true, false, true}) {
             GAME_OPTIONS.mapFogEnabled = enabled;
 
-            var areas = GetSceneAreaRsp.parseFrom(
-                    new PacketGetSceneAreaRsp(player, 3).getData());
-            var points = GetScenePointRsp.parseFrom(
-                    new PacketGetScenePointRsp(player, 3).getData());
+            var areas = GetSceneAreaRsp.parseFrom(new PacketGetSceneAreaRsp(player, 3).getData());
+            var points =
+                    GetScenePointRsp.parseFrom(new PacketGetScenePointRsp(player, 3).getData());
 
             if (enabled) {
                 assertEquals(Set.of(1, 3), Set.copyOf(areas.getAreaIdListList()));
                 assertEquals(Set.of(1, 3), Set.copyOf(points.getUnlockAreaListList()));
             } else {
-                assertEquals(1000, areas.getAreaIdListCount());
-                assertEquals(1000, points.getUnlockAreaListCount());
-                assertEquals(1, areas.getAreaIdList(0));
-                assertEquals(1000, areas.getAreaIdList(999));
+                assertEquals(Set.of(1, 3), Set.copyOf(areas.getAreaIdListList()));
+                assertEquals(Set.of(1, 3), Set.copyOf(points.getUnlockAreaListList()));
             }
             assertEquals(Set.of(1, 3), player.getUnlockedSceneAreas(3));
         }

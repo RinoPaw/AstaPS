@@ -11,11 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Pins TowerTeamSelectReq's field numbers to what the 7.1 client writes.
+ * Pins TowerTeamSelectReq's field numbers to what the 7.2 client writes.
  *
  * <p>A dump that reads fields out of the client's parse routine alone loses this message's team
- * list - the client only ever sends it - and the abyss then silently gets no team. In the 7.1 dump
- * tower_team_list is field 6 and floor_id field 3 (7.0 had them at 8 and 9).
+ * list - the client only ever sends it - and the abyss then silently gets no team. In 7.2, tower_team_list is field 1 and floor_id is field 11.
  *
  * <p>These cases build the payload by hand at those numbers rather than through the generated
  * builder, so a regeneration that dropped tower_team_list again would fail here instead of in game.
@@ -33,12 +32,12 @@ public class TowerTeamRecoveryTest {
         return b.build().toByteArray();
     }
 
-    /** The request as the 7.1 client lays it out: teams at field 6, floor at field 3. */
+    /** The request as the 7.2 client lays it out: teams at field 1, floor at field 11. */
     private static TowerTeamSelectReq onTheWire(int floorId, byte[]... teams) throws Exception {
         var baos = new ByteArrayOutputStream();
         var cos = CodedOutputStream.newInstance(baos);
-        for (byte[] t : teams) cos.writeByteArray(6, t);
-        cos.writeUInt32(3, floorId);
+        for (byte[] t : teams) cos.writeByteArray(1, t);
+        cos.writeUInt32(11, floorId);
         cos.flush();
         return TowerTeamSelectReq.parseFrom(baos.toByteArray());
     }
@@ -76,8 +75,8 @@ public class TowerTeamRecoveryTest {
     }
 
     @Test
-    @DisplayName("floor_id is field 3 and not confused with the team list")
-    public void floorIdUnchanged() throws Exception {
+    @DisplayName("floor_id is field 11 and not confused with the team list")
+    public void floorIdIsIndependentOfTheTeamList() throws Exception {
         var req = onTheWire(1025);
         assertEquals(1025, req.getFloorId());
         assertEquals(0, req.getTowerTeamListCount());

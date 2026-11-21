@@ -11,7 +11,11 @@ public class ContentObtainItem extends BaseContent {
     @Override
     public boolean execute(
             GameQuest quest, QuestData.QuestContentCondition condition, String paramStr, int... params) {
-        val itemId = condition.getParam()[0];
+        int[] target = condition.getParam();
+        if (params.length == 0 || target == null || target.length == 0 || params[0] != target[0]) {
+            return false;
+        }
+        int itemId = target[0];
         var targetAmount = condition.getCount();
         if (targetAmount == 0) {
             targetAmount = 1;

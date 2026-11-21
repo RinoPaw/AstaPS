@@ -517,6 +517,7 @@ public class AbilityModifier implements Serializable {
          * {@code -2} so exploration movement spends nightsoul instead of stamina.
          */
         public DynamicFloat Actor_CostStaminaRatio = DynamicFloat.ZERO;
+        public DynamicFloat Actor_FallingDamageRatio = DynamicFloat.ZERO;
     }
 
     public enum State {

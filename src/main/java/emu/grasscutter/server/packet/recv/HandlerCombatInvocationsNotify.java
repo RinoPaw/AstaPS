@@ -289,7 +289,7 @@ public class HandlerCombatInvocationsNotify extends PacketHandler {
         if (cachedLandingSpeed < -28) {
             damageFactor = 1f;
         }
-        float damage = maxHP * damageFactor;
+        float damage = maxHP * damageFactor * entity.getFallingDamageMultiplier();
         float newHP = currentHP - damage;
         if (entity instanceof EntityAvatar avatarEntity) {
             try {

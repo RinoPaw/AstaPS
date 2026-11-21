@@ -195,6 +195,8 @@
       "given_level": "Dado %s con nivel %s %s veces a %s.",
       "given_avatar": "Dado %s con nivel %s a %s.",
       "giveall_success": "Se han dado todos los objetos correctamente.",
+      "giveall_partial": "No se pudieron entregar %s objetos. Revisa la capacidad del inventario y los límites de acumulación.",
+      "grant_failed": "No se pudo entregar el objeto. Revisa el objeto y los límites del inventario.",
       "description": "Da un objeto a ti o al jugador especificado. También puede dar armas, avatares y/o materiales, y puede construir artefactos personalizados."
     },
     "heal": {

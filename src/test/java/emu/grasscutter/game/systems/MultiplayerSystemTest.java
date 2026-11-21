@@ -11,8 +11,13 @@ import emu.grasscutter.game.systems.TestPlayers.TestPlayer;
 import emu.grasscutter.data.excels.scene.SceneData;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.game.world.World;
+import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.proto.PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify;
+import emu.grasscutter.net.proto.PlayerApplyEnterMpResultReqOuterClass.PlayerApplyEnterMpResultReq;
 import emu.grasscutter.utils.JsonUtils;
 import emu.grasscutter.server.game.GameServer;
+import emu.grasscutter.server.game.GameServerPacketHandler;
+import emu.grasscutter.server.game.GameSession;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -110,6 +115,34 @@ public final class MultiplayerSystemTest {
         assertFalse(outsider.getWorld().isMultiplayer());
         assertEquals(1, outsider.sent.size());
         assertEquals(2, party.getPlayerCount());
+    }
+
+    @Test
+    void nativeHostDeclineRoutesToTheApplicantsResultNotify() throws Exception {
+        host.getCoopRequests().put(outsider.getUid(), new CoopRequest(outsider));
+        var session = new GameSession(server) {
+            @Override
+            public TestPlayer getPlayer() {
+                return host;
+            }
+        };
+        session.setState(GameSession.SessionState.ACTIVE);
+        var router = new GameServerPacketHandler(PacketHandler.class);
+        var decline = HexFormat.of().parseHex("50c801");
+        var accept = PlayerApplyEnterMpResultReq.parseFrom(HexFormat.of().parseHex("50c8017001"));
+        assertEquals(outsider.getUid(), accept.getApplyUid());
+        assertTrue(accept.getIsAgreed());
+
+        router.handle(session, 4544, new byte[0], decline);
+
+        assertTrue(host.getCoopRequests().isEmpty());
+        assertEquals(1, outsider.sent.size());
+        var packet = outsider.sent.getFirst();
+        assertEquals(806, packet.getOpcode());
+        var result = PlayerApplyEnterMpResultNotify.parseFrom(packet.getData());
+        assertEquals(host.getUid(), result.getTargetUid());
+        assertFalse(result.getIsAgreed());
+        assertFalse(outsider.getWorld().isMultiplayer());
     }
 
     @Test

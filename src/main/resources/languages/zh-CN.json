@@ -195,6 +195,8 @@
       "given_level": "已将 %s [等级 %s] %s 个给予 %s。",
       "given_avatar": "已将角色 %s [等级 %s] 给与 %s。",
       "giveall_success": "成功给予全部物品。",
+      "giveall_partial": "有 %s 件物品发放失败，请检查背包容量和堆叠上限。",
+      "grant_failed": "物品发放失败，请检查物品和背包上限。",
       "description": "向你或指定的玩家给予物品。比如可以给予全部武器，角色和/或材料，也可以给予自定义圣遗物"
     },
     "heal": {

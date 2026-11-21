@@ -422,12 +422,17 @@ public class Player implements PlayerHook, FieldFetch {
         return this;
     }
     public void setPhlogistonValue(float value) {
+        if (!Float.isFinite(value)) return;
         if (value < 0) value = 0;
         else if (value > 100) value = 100;
 
         if (value == this.phlogistonValue) return;
 
         this.phlogistonValue = value;
+        if (this.session != null && this.teamManager != null && this.teamManager.getEntity() != null) {
+            this.sendPacket(new PacketServerGlobalValueChangeNotify(
+                    this.teamManager.getEntity().getId(), "SGV_PlayerTeam_Phlogiston", value));
+        }
     }
 
     public float addPhlogistonValue(float amount) {

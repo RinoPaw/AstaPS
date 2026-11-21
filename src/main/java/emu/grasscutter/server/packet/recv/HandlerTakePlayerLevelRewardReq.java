@@ -3,7 +3,8 @@ package emu.grasscutter.server.packet.recv;
 import com.google.protobuf.CodedInputStream;
 import emu.grasscutter.net.proto.TakePlayerLevelRewardReqOuterClass.TakePlayerLevelRewardReq;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.common.ItemParamData;
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.*;
@@ -44,14 +45,25 @@ public class HandlerTakePlayerLevelRewardReq extends PacketHandler {
                 return;
             }
             var rewardData = GameData.getRewardDataMap().get(rewardId);
-            if (rewardData == null
-                    || rewardData.getRewardItemList() == null
-                    || rewardData.getRewardItemList().isEmpty()) {
+            if (rewardData == null) {
                 session.send(new PacketTakePlayerLevelRewardRsp(level, 0));
                 return;
             }
-            List<ItemParamData> rewardItems = rewardData.getRewardItemList();
-            pl.getInventory().addItemParamDatas(rewardItems, ActionReason.PlayerUpgradeReward);
+            List<GameItem> rewardItems = new ArrayList<>();
+            try {
+                for (var item : rewardData.getAllRewardItems()) {
+                    rewardItems.addAll(InventoryGrantBuilder.create(
+                            GameData.getItemDataMap().get(item.getId()), item.getCount(), 1));
+                }
+            } catch (IllegalArgumentException invalidReward) {
+                session.send(new PacketTakePlayerLevelRewardRsp(level, 0));
+                return;
+            }
+            if (rewardItems.isEmpty()
+                    || !pl.getInventory().addItems(rewardItems, ActionReason.PlayerUpgradeReward).allAccepted()) {
+                session.send(new PacketTakePlayerLevelRewardRsp(level, 0));
+                return;
+            }
             if (rewardedLevels == null) rewardedLevels = new HashSet<>();
             rewardedLevels.add(level);
             pl.setRewardedLevels(rewardedLevels);

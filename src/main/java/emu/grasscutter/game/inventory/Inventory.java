@@ -384,6 +384,7 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
 
     private void triggerAddItemEvents(GameItem result) {
         try {
+            triggerItemCountEvents(result.getItemId());
             getPlayer()
                     .getBattlePassManager()
                     .triggerMission(
@@ -416,6 +417,7 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
 
     private void triggerRemItemEvents(GameItem item, int removeCount) {
         try {
+            triggerItemCountEvents(item.getItemId());
             getPlayer()
                     .getBattlePassManager()
                     .triggerMission(WatcherTriggerType.TRIGGER_COST_MATERIAL, item.getItemId(), removeCount);
@@ -425,6 +427,13 @@ public class Inventory extends BasePlayerManager implements Iterable<GameItem> {
         } catch (Exception e) {
             Grasscutter.getLogger().debug("triggerRemItemEvents failed", e);
         }
+    }
+
+    private void triggerItemCountEvents(int itemId) {
+        var quests = getPlayer().getQuestManager();
+        quests.queueEvent(QuestContent.QUEST_CONTENT_ITEM_NUM_EQUAL, itemId);
+        quests.queueEvent(QuestContent.QUEST_CONTENT_ITEM_NUM_GREATER, itemId);
+        quests.queueEvent(QuestContent.QUEST_CONTENT_ITEM_NUM_LESS, itemId);
     }
 
     public void addItemParams(Collection<ItemParam> items) {

@@ -167,8 +167,6 @@ public class Avatar {
         setFightProperty(FightProperty.FIGHT_PROP_CUR_HP, this.currentHp);
         setFightProperty(FightProperty.FIGHT_PROP_CUR_SPECIAL_ENERGY, 100f);
         this.currentEnergy = 0f;
-        // Load handler
-        this.onLoad();
     }
 
     public static int getMinPromoteLevel(int level) {

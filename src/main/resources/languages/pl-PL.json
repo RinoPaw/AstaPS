@@ -195,6 +195,8 @@
       "given_level": "Dodano %s artefaktów o poziomie %s oraz ID %s graczowi o ID %s.",
       "given_avatar": "Dodano awatar o ID %s oraz poziomie %s graczowi o ID %s.",
       "giveall_success": "Pomyślnie dodano wybrane przedmioty.",
+      "giveall_partial": "Nie udało się przekazać %s przedmiotów. Sprawdź pojemność ekwipunku i limity stosów.",
+      "grant_failed": "Nie udało się przekazać przedmiotu. Sprawdź przedmiot i limity ekwipunku.",
       "description": "Dodaj wybrane przedmioty do ekwipunku wybranego gracza."
     },
     "heal": {

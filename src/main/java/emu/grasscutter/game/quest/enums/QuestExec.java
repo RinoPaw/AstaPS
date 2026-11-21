@@ -1,6 +1,7 @@
 package emu.grasscutter.game.quest.enums;
 
 import it.unimi.dsi.fastutil.ints.*;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -51,7 +52,8 @@ public enum QuestExec implements QuestTrigger {
     QUEST_EXEC_INC_QUEST_GLOBAL_VAR(44),
     QUEST_EXEC_DEC_QUEST_GLOBAL_VAR(45),
     QUEST_EXEC_REGISTER_DYNAMIC_GROUP(
-            46), // test, maybe the dynamic should be saved on a list and when you enter the view range
+            46), // test, maybe the dynamic should be saved on a list and when you enter the view
+                 // range
     // this loads it again
     QUEST_EXEC_UNREGISTER_DYNAMIC_GROUP(47), // test, same for this
     QUEST_EXEC_SET_QUEST_VAR(48),
@@ -77,10 +79,10 @@ public enum QuestExec implements QuestTrigger {
     QUEST_EXEC_MODIFY_WEATHER_AREA(68), // missing
     QUEST_EXEC_MODIFY_ARANARA_COLLECTION_STATE(69), // missing
     QUEST_EXEC_GRANT_TRIAL_AVATAR_BATCH_AND_LOCK_TEAM(70), // missing
-    // Names from the 7.1 quest data; the values are internal only.
-    QUEST_EXEC_BATCH_SET_QUEST_VAR(71),
-    QUEST_EXEC_SET_IS_GAME_TIME_LOCKED_V2(72),
-    QUEST_EXEC_SET_OPEN_STATE_V2(73),
+    QUEST_EXEC_SET_IS_GAME_TIME_LOCKED_V2(81),
+    QUEST_EXEC_BATCH_SET_QUEST_VAR(112),
+    QUEST_EXEC_SET_OPEN_STATE_V2(118),
+    QUEST_EXEC_BATCH_SET_OPEN_STATE(123),
     QUEST_EXEC_UNKNOWN(9999);
 
     private final int value;

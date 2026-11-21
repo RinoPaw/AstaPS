@@ -178,7 +178,8 @@ public class ItemData extends GameResource {
                                 a ->
                                         a.getItemUseOp() == ItemUseOp.ITEM_USE_ADD_ELEM_ENERGY
                                                 || a.getItemUseOp()
-                                                        == ItemUseOp.ITEM_USE_ADD_ALL_ENERGY)) {
+                                                        == ItemUseOp.ITEM_USE_ADD_ALL_ENERGY
+                                                || a.getItemUseOp() == ItemUseOp.ITEM_USE_ADD_PHLOGISTON)) {
             this.useOnGain = true;
         }
     }

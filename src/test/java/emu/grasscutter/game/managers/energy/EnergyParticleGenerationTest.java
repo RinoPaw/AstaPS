@@ -95,8 +95,8 @@ final class EnergyParticleGenerationTest {
         var bytes = payload().toByteString();
         if (itemId == 2017 || itemId == 2021) {
             var hex = itemId == 2017
-                    ? "5a0f0dbf3224451588d97d431d9a1ad2c4720515ae299943"
-                    : "5a0f0d5f3f2445152a6580431d451ad2c4720515e21b8842";
+                    ? "520f0dbf3224451588d97d431d9a1ad2c45a0515ae299943"
+                    : "520f0d5f3f2445152a6580431d451ad2c45a0515e21b8842";
             bytes = com.google.protobuf.ByteString.copyFrom(java.util.HexFormat.of().parseHex(hex));
         }
         assertTrue(new ActionGenerateElemBall().execute(ability,action,bytes,owner));

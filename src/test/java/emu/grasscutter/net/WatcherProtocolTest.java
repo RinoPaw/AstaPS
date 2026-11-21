@@ -21,44 +21,44 @@ final class WatcherProtocolTest {
     }
 
     @Test
-    void allDataListsWatchersOnFifteen() {
+    void allDataListsWatchersOnTwelve() {
         var packet = new PacketWatcherAllDataNotify(List.of(80001));
-        assertEquals(6265, packet.getOpcode());
-        // watcher_list (15, packed): 80001 = 81 f1 04.
-        assertEquals("7a0381f104", hex(packet.getData()));
+        assertEquals(329, packet.getOpcode());
+        // watcher_list (12, packed): 80001 = 81 f1 04.
+        assertEquals("620381f104", hex(packet.getData()));
     }
 
     @Test
-    void changeRemovesOnTwelve() {
+    void legacyChangeRetainsItsDescriptorButHasNoCurrentRoute() {
         var packet = new PacketWatcherChangeNotify(List.of(), List.of(81005));
-        assertEquals(3917, packet.getOpcode());
+        assertEquals(0, packet.getOpcode());
         assertEquals("6203edf804", hex(packet.getData()));
     }
 
     @Test
-    void clientEventsParseSevenOneFields() throws Exception {
-        // watcher_id (11) = 81005, add_progress (15) = 1.
-        var event = WatcherEventNotify.parseFrom(HexFormat.of().parseHex("58edf8047801"));
+    void clientEventsParseSevenTwoFields() throws Exception {
+        // watcher_id (11) = 81005, add_progress (7) = 1.
+        var event = WatcherEventNotify.parseFrom(HexFormat.of().parseHex("58edf8043801"));
         assertEquals(81005, event.getWatcherId());
         assertEquals(1, event.getAddProgress());
-        assertEquals(23532, PacketOpcodes.WatcherEventNotify);
+        assertEquals(29994, PacketOpcodes.WatcherEventNotify);
 
-        // watcher_trigger_type (4) = 113, param_list (11) = [70510009], add_progress (13) = 1.
-        var type = WatcherEventTypeNotify.parseFrom(HexFormat.of().parseHex("2071" + "5a04b9cbcf21" + "6801"));
+        // watcher_trigger_type (10) = 113, param_list (7) = [70510009], add_progress (3) = 1.
+        var type = WatcherEventTypeNotify.parseFrom(HexFormat.of().parseHex("5071" + "3a04b9cbcf21" + "1801"));
         assertEquals(113, type.getWatcherTriggerType());
         assertEquals(List.of(70510009), type.getParamListList());
         assertEquals(1, type.getAddProgress());
     }
 
     @Test
-    void unlockTransPointRspRetcodeOnFive() {
-        assertEquals(8462, PacketOpcodes.UnlockTransPointRsp);
-        assertEquals("2801", hex(UnlockTransPointRsp.newBuilder().setRetcode(1).build().toByteArray()));
+    void unlockTransPointRspRetcodeOnEight() {
+        assertEquals(6339, PacketOpcodes.UnlockTransPointRsp);
+        assertEquals("4001", hex(UnlockTransPointRsp.newBuilder().setRetcode(1).build().toByteArray()));
     }
 
     @Test
-    void iceCreatureDataMatchesCapturedLayout() {
-        assertEquals(25312, PacketOpcodes.IceCreatureDataNotify);
+    void legacyIceCreatureDataPreservesTheCapturedLayout() {
+        assertEquals(0, PacketOpcodes.IceCreatureDataNotify);
         var data =
                 IceCreatureDataNotify.newBuilder()
                         .addUnlockedGadgetIdList(73094016)
@@ -77,8 +77,8 @@ final class WatcherProtocolTest {
     }
 
     @Test
-    void iceCreatureSetTypeGadgetReadsItsOwnNumbers() throws Exception {
-        assertEquals(29885, PacketOpcodes.IceCreatureSetTypeGadgetReq);
+    void legacyIceCreatureSetTypeGadgetPreservesItsFields() throws Exception {
+        assertEquals(0, PacketOpcodes.IceCreatureSetTypeGadgetReq);
         // type (4) = 21, gadget_id (5) = 73174021.
         var req = IceCreatureSetTypeGadgetReq.parseFrom(HexFormat.of().parseHex("2015" + "288598f222"));
         assertEquals(21, req.getType());

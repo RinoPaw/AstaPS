@@ -107,6 +107,13 @@ Then build with:
 
 On Windows use `./gradlew.bat`.
 
+For a failed build, keep the console output starting at `FAILURE: Build failed with an exception`
+and the first `error:` / `Caused by:` line. `build/reports/problems/problems-report.html` can
+contain only deprecation warnings; that report alone does not identify a build failure.
+Use `./gradlew.bat jar -PskipHandbook=1 --stacktrace` to capture the actual error.
+On Windows 10, use Windows Terminal with a font containing Chinese glyphs; in a legacy
+Command Prompt run `chcp 65001` before launching Java. Log files are written as UTF-8.
+
 ## Running
 
 1. Start MongoDB.

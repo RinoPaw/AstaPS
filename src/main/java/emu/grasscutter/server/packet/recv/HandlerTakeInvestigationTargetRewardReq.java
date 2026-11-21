@@ -9,12 +9,12 @@ import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTakeInvestigationTargetRewardRsp;
 import java.io.IOException;
 
-/** TakeInvestigationTargetRewardReq: quest_id = 9 */
+/** 7.2 TakeInvestigationTargetRewardReq: quest_id = 15. */
 @Opcodes(PacketOpcodes.TakeInvestigationTargetRewardReq)
 public class HandlerTakeInvestigationTargetRewardReq extends PacketHandler {
     @Override
     public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        int questId = readUInt32Field(payload, 9);
+        int questId = readUInt32Field(payload, 15);
         int retcode = InvestigationHandbookHelper.claimTargetReward(session.getPlayer(), questId);
         session.send(new PacketTakeInvestigationTargetRewardRsp(questId, retcode));
     }

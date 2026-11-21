@@ -121,6 +121,14 @@ public class SotSManager extends BasePlayerManager {
      * same behaviour without depending on that opcode, and it logs the measured distance so the
      * radius below can be calibrated against the real one.
      */
+    public void refreshNearbyStatueInteractions() {
+        this.updateStatueProximity();
+        if (player.getScene() != null && nearbyStatuePointId > 0) {
+            player.getProgressManager().refreshStatueGoddessInteractions(
+                    player.getSceneId(), nearbyStatuePointId);
+        }
+    }
+
     public void updateStatueProximity() {
         var scene = player.getScene();
         if (scene == null) return;

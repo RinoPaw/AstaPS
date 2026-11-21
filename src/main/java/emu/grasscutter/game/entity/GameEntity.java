@@ -389,6 +389,24 @@ public abstract class GameEntity {
     }
 
     /** Recompute modifier protection without clearing locks set directly by scene mechanics. */
+    public float getFallingDamageMultiplier() {
+        float ratio = 1f;
+        // 只读当前附着的 modifier，技能结束后的移除会立即恢复摔伤。
+        for (var controller : this.instancedModifiers.values()) {
+            var data = controller.getModifierData();
+            if (data == null || data.properties == null) continue;
+            var value = data.properties.Actor_FallingDamageRatio;
+            if (value == null) continue;
+            var values = new it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap<String>();
+            values.putAll(this.getGlobalAbilityValues());
+            var ability = controller.getAbility();
+            if (ability != null) values.putAll(ability.getAbilitySpecials());
+            float delta = value.get(values, 0f);
+            if (Float.isFinite(delta)) ratio += delta;
+        }
+        return Math.max(0f, ratio);
+    }
+
     public void refreshModifierLockHP() {
         this.modifierLockHP = this.instancedModifiers.values().stream()
                 .filter(java.util.Objects::nonNull)

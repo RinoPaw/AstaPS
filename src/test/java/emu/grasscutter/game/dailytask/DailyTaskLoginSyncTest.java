@@ -71,7 +71,7 @@ final class DailyTaskLoginSyncTest {
     void sameDayLoginDeliversExistingBoardWithoutSaveRerollOrNewCompletion() throws Exception {
         var originalTasks = List.copyOf(manager.getDailyTasks());
         manager.onPlayerLogin();
-        assertEquals(List.of(2841, 28004), opcodes());
+        assertEquals(List.of(26315, 27757), opcodes());
         assertBoard(1);
         assertEquals(0, manager.saves);
         assertEquals(today(), manager.getLastGenerationDate());
@@ -86,7 +86,7 @@ final class DailyTaskLoginSyncTest {
         manager.onPlayerLogin();
         transport.writes.clear();
         manager.onPlayerLogin();
-        assertEquals(List.of(2841, 28004), opcodes());
+        assertEquals(List.of(26315, 27757), opcodes());
         assertBoard(1);
         assertEquals(0, manager.saves);
     }
@@ -100,7 +100,7 @@ final class DailyTaskLoginSyncTest {
         var restored = gson.fromJson(json, RecordingManager.class);
         attach(restored);
         manager.onPlayerLogin();
-        assertEquals(List.of(2841, 28004), opcodes());
+        assertEquals(List.of(26315, 27757), opcodes());
         assertBoard(city);
         assertEquals(city, manager.getCityId());
         assertEquals(0, manager.saves);
@@ -112,7 +112,7 @@ final class DailyTaskLoginSyncTest {
     void underRankPlayerIsNotAdvertisedABoardEvenWithInheritedTasks() {
         player.rank = 11;
         manager.onPlayerLogin();
-        assertEquals(List.of(2841), opcodes());
+        assertEquals(List.of(26315), opcodes());
         assertEquals(0, manager.saves);
         assertEquals(4, manager.getDailyTasks().size());
     }
@@ -121,7 +121,7 @@ final class DailyTaskLoginSyncTest {
     void emptyCurrentQuotaDoesNotAdvertiseAnInventedBoard() {
         manager.getDailyTasks().clear();
         manager.onPlayerLogin();
-        assertEquals(List.of(2841), opcodes());
+        assertEquals(List.of(26315), opcodes());
         assertEquals(0, manager.saves);
         assertTrue(manager.getDailyTasks().isEmpty());
     }
@@ -130,7 +130,7 @@ final class DailyTaskLoginSyncTest {
     void incompleteCurrentQuotaIsPreservedRatherThanRerolledOrAdvertisedAsFour() {
         manager.getDailyTasks().remove(3);
         manager.onPlayerLogin();
-        assertEquals(List.of(2841), opcodes());
+        assertEquals(List.of(26315), opcodes());
         assertEquals(3, manager.getDailyTasks().size());
         assertEquals(0, manager.saves);
     }
@@ -147,7 +147,7 @@ final class DailyTaskLoginSyncTest {
         }
         manager.onPlayerLogin();
         if (manager.getLastGenerationDate() == today()) return; // Resources allowed a fresh set.
-        assertEquals(List.of(2841), opcodes());
+        assertEquals(List.of(26315), opcodes());
         assertEquals(today() - 1, manager.getLastGenerationDate());
     }
 

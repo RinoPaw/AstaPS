@@ -8,6 +8,7 @@ import emu.grasscutter.game.quest.conditions.BaseCondition;
 import emu.grasscutter.game.quest.content.BaseContent;
 import emu.grasscutter.game.quest.handlers.QuestExecHandler;
 import emu.grasscutter.server.game.*;
+
 import it.unimi.dsi.fastutil.ints.*;
 
 public final class QuestSystem extends BaseGameSystem {
@@ -47,6 +48,12 @@ public final class QuestSystem extends BaseGameSystem {
             } else if (handlerClass.isAnnotationPresent(QuestValueContent.class)) {
                 QuestValueContent opcode = handlerClass.getAnnotation(QuestValueContent.class);
                 value = opcode.value().getValue();
+                var handler = handlerClass.getDeclaredConstructor().newInstance();
+                if (value > 0) map.put(value, handler);
+                for (var alias : opcode.aliases()) {
+                    if (alias.getValue() > 0) map.put(alias.getValue(), handler);
+                }
+                return;
             } else if (handlerClass.isAnnotationPresent(QuestValueCond.class)) {
                 QuestValueCond opcode = handlerClass.getAnnotation(QuestValueCond.class);
                 value = opcode.value().getValue();
@@ -77,7 +84,10 @@ public final class QuestSystem extends BaseGameSystem {
 
         if (handler == null || questData == null) {
             Grasscutter.getLogger()
-                    .debug("Could not trigger condition {} at {}", condition.getType().getValue(), questData);
+                    .debug(
+                            "Could not trigger condition {} at {}",
+                            condition.getType().getValue(),
+                            questData);
             return false;
         }
 

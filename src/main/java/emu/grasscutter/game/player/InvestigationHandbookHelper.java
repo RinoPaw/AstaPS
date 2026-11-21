@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
+import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.game.inventory.InventoryGrantBuilder;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.props.ElementType;
 import emu.grasscutter.game.props.WatcherTriggerType;
@@ -15,9 +17,8 @@ import emu.grasscutter.server.packet.send.PacketOpenStateChangeNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerInvestigationAllInfoNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerInvestigationAllInfoNotify.InvestigationInfo;
 import emu.grasscutter.server.packet.send.PacketPlayerInvestigationAllInfoNotify.TargetInfo;
+import emu.grasscutter.utils.FileUtils;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,11 +33,6 @@ import java.util.Set;
  * login so already-completed milestones show correctly.
  */
 public final class InvestigationHandbookHelper {
-    private static final Path CONFIG_PATH =
-            Paths.get("resources", "ExcelBinOutput", "InvestigationConfigData.json");
-    private static final Path TARGET_PATH =
-            Paths.get("resources", "ExcelBinOutput", "InvestigationTargetConfigData.json");
-
     /** OPEN_ADVENTURE_MANUAL */
     private static final int OPEN_STATE_MANUAL = 1100;
     /** OPEN_ADVENTURE_MANUAL_CITY_MENGDE */
@@ -241,24 +237,27 @@ public final class InvestigationHandbookHelper {
             }
             int progress = getProgress(player, target.id);
             int total = Math.max(1, target.progress);
-            int state = getTargetState(player, target.id, progress, total);
-            if (state == STATE_REWARD_TAKEN) {
-                return 0; // already claimed — idempotent ok
+            synchronized (player) {
+                if (getTargetState(player, target.id, progress, total) == STATE_REWARD_TAKEN) {
+                    return 0;
+                }
+                if (progress < total) {
+                    Grasscutter.getLogger()
+                            .info(
+                                    "Investigation claim refused (incomplete) uid={} questId={} targetId={} progress={}/{}",
+                                    player.getUid(),
+                                    questId,
+                                    target.id,
+                                    progress,
+                                    total);
+                    return 1;
+                }
+                if (!grantReward(player, target.rewardId, emu.grasscutter.game.props.ActionReason.InvestigationTargetReward)) {
+                    return 1;
+                }
+                player.getPlayerProgress().setInvestigationTargetState(target.id, STATE_REWARD_TAKEN);
+                player.save();
             }
-            if (progress < total) {
-                Grasscutter.getLogger()
-                        .info(
-                                "Investigation claim refused (incomplete) uid={} questId={} targetId={} progress={}/{}",
-                                player.getUid(),
-                                questId,
-                                target.id,
-                                progress,
-                                total);
-                return 1;
-            }
-            grantReward(player, target.rewardId, emu.grasscutter.game.props.ActionReason.InvestigationTargetReward);
-            player.getPlayerProgress().setInvestigationTargetState(target.id, STATE_REWARD_TAKEN);
-            player.save();
 
             if (player.getSession() != null) {
                 TargetInfo info =
@@ -308,29 +307,26 @@ public final class InvestigationHandbookHelper {
             if (chapter == null) {
                 return 1;
             }
-            if (player.getPlayerProgress().getInvestigationChapterState(chapterId)
-                    == STATE_REWARD_TAKEN) {
-                return 0;
-            }
             List<TargetDef> targets = TARGETS_BY_CHAPTER.getOrDefault(chapterId, List.of());
-            if (targets.isEmpty()) {
-                return 1;
-            }
-            for (TargetDef target : targets) {
-                int progress = getProgress(player, target.id);
-                int total = Math.max(1, target.progress);
-                if (progress < total) {
+            synchronized (player) {
+                if (player.getPlayerProgress().getInvestigationChapterState(chapterId)
+                        == STATE_REWARD_TAKEN) {
+                    return 0;
+                }
+                if (targets.isEmpty()) {
                     return 1;
                 }
+                for (TargetDef target : targets) {
+                    if (getProgress(player, target.id) < Math.max(1, target.progress)) {
+                        return 1;
+                    }
+                }
+                if (!grantReward(player, chapter.rewardId, emu.grasscutter.game.props.ActionReason.InvestigationReward)) {
+                    return 1;
+                }
+                player.getPlayerProgress().setInvestigationChapterState(chapterId, STATE_REWARD_TAKEN);
+                player.save();
             }
-            if (chapter.rewardId > 0) {
-                grantReward(
-                        player,
-                        chapter.rewardId,
-                        emu.grasscutter.game.props.ActionReason.InvestigationReward);
-            }
-            player.getPlayerProgress().setInvestigationChapterState(chapterId, STATE_REWARD_TAKEN);
-            player.save();
 
             if (player.getSession() != null) {
                 InvestigationInfo chapterInfo =
@@ -369,28 +365,23 @@ public final class InvestigationHandbookHelper {
         return target.id;
     }
 
-    private static void grantReward(
+    private static boolean grantReward(
             Player player, int rewardId, emu.grasscutter.game.props.ActionReason reason) {
         if (rewardId <= 0) {
-            return;
+            return true;
         }
-        var rewardData = emu.grasscutter.data.GameData.getRewardDataMap().get(rewardId);
-        if (rewardData == null || rewardData.getRewardItemList() == null) {
+        var rewardData = GameData.getRewardDataMap().get(rewardId);
+        if (rewardData == null) {
             Grasscutter.getLogger().warn("Investigation reward missing id={}", rewardId);
-            return;
+            return false;
         }
-        java.util.List<emu.grasscutter.data.common.ItemParamData> scaled = new ArrayList<>();
-        for (var item : rewardData.getRewardItemList()) {
-            if (item == null || item.getId() <= 0) {
-                continue;
-            }
-            scaled.add(
-                    new emu.grasscutter.data.common.ItemParamData(
-                            item.getId(), Math.max(0, item.getCount()) * REWARD_MULTIPLIER));
+        List<GameItem> items = new ArrayList<>();
+        for (var item : rewardData.getAllRewardItems()) {
+            items.addAll(InventoryGrantBuilder.create(
+                    GameData.getItemDataMap().get(item.getId()),
+                    Math.multiplyExact(item.getCount(), REWARD_MULTIPLIER), 1));
         }
-        if (!scaled.isEmpty()) {
-            player.getInventory().addItemParamDatas(scaled, reason);
-        }
+        return !items.isEmpty() && player.getInventory().addItems(items, reason).allAccepted();
     }
 
     /** Recompute snapshot targets and push changed handbook packets. */
@@ -844,9 +835,9 @@ public final class InvestigationHandbookHelper {
         TARGETS_BY_QUEST_ID.clear();
         TARGETS_BY_TRIGGER.clear();
         try {
-            if (Files.exists(CONFIG_PATH)) {
-                JsonArray arr =
-                        JsonParser.parseReader(Files.newBufferedReader(CONFIG_PATH)).getAsJsonArray();
+            var configPath = FileUtils.getResourcePath("ExcelBinOutput/InvestigationConfigData.json");
+            if (Files.exists(configPath)) {
+                JsonArray arr = JsonParser.parseString(Files.readString(configPath)).getAsJsonArray();
                 for (JsonElement el : arr) {
                     JsonObject obj = el.getAsJsonObject();
                     int id = obj.get("id").getAsInt();
@@ -862,9 +853,9 @@ public final class InvestigationHandbookHelper {
                     CHAPTERS_BY_ID.put(def.id, def);
                 }
             }
-            if (Files.exists(TARGET_PATH)) {
-                JsonArray arr =
-                        JsonParser.parseReader(Files.newBufferedReader(TARGET_PATH)).getAsJsonArray();
+            var targetPath = FileUtils.getResourcePath("ExcelBinOutput/InvestigationTargetConfigData.json");
+            if (Files.exists(targetPath)) {
+                JsonArray arr = JsonParser.parseString(Files.readString(targetPath)).getAsJsonArray();
                 for (JsonElement el : arr) {
                     JsonObject obj = el.getAsJsonObject();
                     int investigationId = obj.get("investigationId").getAsInt();

@@ -214,7 +214,9 @@ public final class ResourceLoader {
      * key legitimately, so this only speaks up when almost all of them do.
      */
     private static void reportCollapse(Class<?> c, String filename, int rows, int added) {
-        if (rows < 8 || added > Math.max(2, rows / 8)) return;
+        // Small tables matter too: AvatarReplaceCostumeExcelConfigData has 4 rows and lost 3 of them
+        // while this threshold was 8. Only a single-row table is too small to be evidence of anything.
+        if (rows < 2 || added > Math.max(1, rows / 8)) return;
 
         Grasscutter.getLogger()
                 .warn(

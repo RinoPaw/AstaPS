@@ -8,16 +8,23 @@ import emu.grasscutter.data.excels.avatar.AvatarCostumeData;
 import emu.grasscutter.data.excels.avatar.AvatarReplaceCostumeData;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
- * The four alternate outfits in {@code AvatarReplaceCostumeExcelConfigData} are flagged
- * {@code isDefaultUnlock} in the shipped 7.2 table and are referenced by no shop, reward or giving
- * row, so {@code addReplaceCostumes()} is the only path that can ever hand them to a player. These
- * tests pin the grant to that table instead of to a hardcoded list.
+ * The four free alternate outfits (Jean, Amber, Mona, Rosaria) are the rows of
+ * {@code AvatarCostumeExcelConfigData} flagged {@code isDefaultUnlock=true}. They are referenced by
+ * no shop, reward or giving row, so {@code addReplaceCostumes()} is the only path that can ever hand
+ * them to a player.
+ *
+ * <p>The grant keys off that flag, not off {@code AvatarReplaceCostumeExcelConfigData} membership.
+ * The two sets hold the same four ids in the shipped 7.2 tree, but the replace table has no
+ * ownership column — it says "this outfit stands in for the default look", a different question.
+ * These tests pin the grant to ownership so that a future tree listing a <em>purchasable</em>
+ * outfit there cannot silently hand it out for free.
  */
 @ResourceLock("GameData")
 final class ReplaceCostumeGrantTest {
@@ -29,15 +36,16 @@ final class ReplaceCostumeGrantTest {
                 AvatarReplaceCostumeData.class);
     }
 
-    private static AvatarCostumeData costume(int skinId) {
+    private static AvatarCostumeData costume(int skinId, boolean isDefaultUnlock) {
         return new Gson().fromJson(
-                "{\"skinId\":%d,\"itemId\":%d,\"characterId\":10000003}"
-                        .formatted(skinId, 340006),
+                "{\"skinId\":%d,\"itemId\":%d,\"characterId\":10000003,\"isDefaultUnlock\":%b}"
+                        .formatted(skinId, 340006, isDefaultUnlock),
                 AvatarCostumeData.class);
     }
 
     /** Runs {@code body} with both costume tables replaced by the given contents. */
-    private static void withTables(Set<Integer> replaceRows, Set<Integer> costumeRows, Runnable body) {
+    private static void withTables(
+            Set<Integer> replaceRows, Map<Integer, Boolean> costumeRows, Runnable body) {
         var replaceMap = GameData.getAvatarReplaceCostumeDataMap();
         var costumeMap = GameData.getAvatarCostumeDataMap();
         var oldReplace = new java.util.HashMap<>(replaceMap);
@@ -46,7 +54,7 @@ final class ReplaceCostumeGrantTest {
         costumeMap.clear();
         try {
             for (int id : replaceRows) replaceMap.put(id, replace(id, id));
-            for (int id : costumeRows) costumeMap.put(id, costume(id));
+            costumeRows.forEach((id, flagged) -> costumeMap.put(id, costume(id, flagged)));
             body.run();
         } finally {
             replaceMap.clear();
@@ -56,21 +64,61 @@ final class ReplaceCostumeGrantTest {
         }
     }
 
+    /** The shipped 7.2 shape: all four outfits are replace rows and all four are flagged. */
+    private static void withShippedShape(Runnable body) {
+        withTables(
+                Set.copyOf(SHIPPED),
+                Map.of(200302, true, 202101, true, 204101, true, 204501, true),
+                body);
+    }
+
     @Test
     void grantCoversExactlyTheShippedReplaceCostumes() {
-        withTables(Set.copyOf(SHIPPED), Set.copyOf(SHIPPED), () -> {
-            assertEquals(SHIPPED, new ArrayList<>(new TreeSet<>(PlayerProgressManager.resolveReplaceCostumeIds())));
-            var player = new RecordingPlayer();
-            player.getProgressManager().addReplaceCostumes();
-            assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
-        });
+        withShippedShape(
+                () -> {
+                    assertEquals(
+                            SHIPPED,
+                            new ArrayList<>(
+                                    new TreeSet<>(
+                                            PlayerProgressManager
+                                                    .resolveDefaultUnlockCostumeIds())));
+                    var player = new RecordingPlayer();
+                    player.getProgressManager().addReplaceCostumes();
+                    assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
+                });
+    }
+
+    /**
+     * The coupling this card exists to pin. Ownership is the flag; replace-table membership is a
+     * different concept that only coincides with it today. If the two ever diverge the grant must
+     * follow the flag, both ways round.
+     */
+    @Test
+    void grantFollowsTheOwnershipFlagNotTheReplaceTable() {
+        withTables(
+                // 900001 is a replace row that is NOT flagged: a purchasable outfit.
+                // 900002 is flagged but not a replace row: free regardless.
+                Set.of(900001),
+                Map.of(900001, false, 900002, true),
+                () -> {
+                    assertEquals(
+                            Set.of(900002),
+                            PlayerProgressManager.resolveDefaultUnlockCostumeIds());
+                    var player = new RecordingPlayer();
+                    player.getProgressManager().addReplaceCostumes();
+                    assertEquals(Set.of(900002), new TreeSet<>(player.getCostumeList()));
+                    assertFalse(
+                            player.getCostumeList().contains(900001),
+                            "a replace-table row that is not flagged must not be granted for free");
+                });
     }
 
     @Test
     void costumeRowWithoutABackingSkinIsSkipped() {
-        // A collapsed/partial costume table must not put a nonexistent skin on the player.
-        withTables(Set.of(200302), Set.of(999999), () -> {
-            assertTrue(PlayerProgressManager.resolveReplaceCostumeIds().isEmpty());
+        // A collapsed or partial costume table must not put a nonexistent skin on the player: the
+        // flag can only be read from a row that actually loaded, so nothing is flagged here.
+        withTables(Set.of(200302), Map.of(999999, false), () -> {
+            assertTrue(PlayerProgressManager.resolveDefaultUnlockCostumeIds().isEmpty());
             var player = new RecordingPlayer();
             player.getProgressManager().addReplaceCostumes();
             assertTrue(player.getCostumeList().isEmpty());
@@ -79,39 +127,42 @@ final class ReplaceCostumeGrantTest {
 
     @Test
     void grantIsIdempotentAcrossRepeatedLogins() {
-        withTables(Set.copyOf(SHIPPED), Set.copyOf(SHIPPED), () -> {
-            var player = new RecordingPlayer();
-            player.getProgressManager().addReplaceCostumes();
-            int firstGrants = player.granted.size();
+        withShippedShape(
+                () -> {
+                    var player = new RecordingPlayer();
+                    player.getProgressManager().addReplaceCostumes();
+                    int firstGrants = player.granted.size();
 
-            player.getProgressManager().addReplaceCostumes();
-            player.getProgressManager().addReplaceCostumes();
+                    player.getProgressManager().addReplaceCostumes();
+                    player.getProgressManager().addReplaceCostumes();
 
-            assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
-            // addCostume() emits AvatarGainCostumeNotify and saves; repeats must not redo either.
-            assertEquals(firstGrants, player.granted.size());
-            assertEquals(SHIPPED.size(), player.granted.size());
-            assertEquals(1, player.saves);
-        });
+                    assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
+                    // addCostume() emits AvatarGainCostumeNotify and saves; repeats must not redo
+                    // either.
+                    assertEquals(firstGrants, player.granted.size());
+                    assertEquals(SHIPPED.size(), player.granted.size());
+                    assertEquals(1, player.saves);
+                });
     }
 
     @Test
     void existingOwnershipIsNotReGrantedButMissingOnesStillAre() {
-        withTables(Set.copyOf(SHIPPED), Set.copyOf(SHIPPED), () -> {
-            var player = new RecordingPlayer();
-            player.getCostumeList().add(200302);
-            player.getProgressManager().addReplaceCostumes();
+        withShippedShape(
+                () -> {
+                    var player = new RecordingPlayer();
+                    player.getCostumeList().add(200302);
+                    player.getProgressManager().addReplaceCostumes();
 
-            assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
-            assertEquals(3, player.granted.size());
-            assertFalse(player.granted.contains(200302));
-        });
+                    assertEquals(new TreeSet<>(SHIPPED), new TreeSet<>(player.getCostumeList()));
+                    assertEquals(3, player.granted.size());
+                    assertFalse(player.granted.contains(200302));
+                });
     }
 
     @Test
-    void unknownReplaceCostumeTableGrantsNothing() {
+    void emptyCostumeTableGrantsNothing() {
         // The 7.2 regression being fixed: a table that binds no rows must be a no-op, not a crash.
-        withTables(Set.of(), Set.copyOf(SHIPPED), () -> {
+        withTables(Set.of(), Map.of(), () -> {
             var player = new RecordingPlayer();
             player.getProgressManager().addReplaceCostumes();
             assertTrue(player.getCostumeList().isEmpty());

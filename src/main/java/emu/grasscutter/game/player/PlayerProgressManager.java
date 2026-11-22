@@ -180,9 +180,9 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         // Retry only activations that were explicitly persisted as unpaid.
         retryPendingTransPointRewards();
 
-        // The four alternate outfits in AvatarReplaceCostumeExcelConfigData are flagged
-        // isDefaultUnlock in the shipped table and appear in no shop, reward or giving row, so
-        // nothing else can ever hand them to a player. Grant them here, once, idempotently.
+        // Four alternate outfits in AvatarCostumeExcelConfigData are flagged isDefaultUnlock=true
+        // and appear in no shop, reward or giving row, so nothing else can ever hand them to a
+        // player. Grant them here, once, idempotently.
         try {
             this.addReplaceCostumes();
         } catch (Throwable e) {
@@ -1310,31 +1310,34 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
     }
 
     /**
-     * Costume ids the shipped resource hands out for free: the four alternate outfits in
-     * {@code AvatarReplaceCostumeExcelConfigData} (Amber, Jean, Mona, Rosaria).
+     * Costume ids the shipped resource says a player owns without any acquisition step: the four
+     * alternate outfits in {@code AvatarCostumeExcelConfigData} flagged {@code isDefaultUnlock=true}
+     * (Jean, Amber, Mona, Rosaria).
      *
-     * <p>7.2 marks exactly these four rows {@code isDefaultUnlock=true} and {@code hide=true}, and
-     * no shop, reward or giving row references their item ids, so they are not purchasable. Only
-     * ids that a real {@code AvatarCostumeExcelConfigData} row backs are returned, so a resource
-     * tree that failed to load the costume table cannot put a nonexistent skin on a player.
+     * <p>Derived from the flag rather than from {@code AvatarReplaceCostumeExcelConfigData}
+     * membership. The two sets are equal in the shipped 7.2 tree — same four ids — but only by
+     * coincidence: that table has no ownership column at all (its schema is just
+     * {@code avatarId}/{@code replace_costume_id}, i.e. "which outfit stands in for the default
+     * look"), so it cannot express "this is free". Keying the grant off it meant any future tree
+     * that listed a *purchasable* alternate look there would hand it out for free. The flag is the
+     * literal ownership marker: 4 of 162 rows set it, all four also {@code hide=true}, and the 26
+     * other alternate outfits leave it absent and are shop- or reward-obtainable.
      */
-    static Set<Integer> resolveReplaceCostumeIds() {
+    static Set<Integer> resolveDefaultUnlockCostumeIds() {
         var ids = new HashSet<Integer>();
-        GameData.getAvatarReplaceCostumeDataMap()
-                .keySet()
-                .forEach(
-                        costumeId -> {
-                            if (GameData.getAvatarCostumeDataMap().get(costumeId) == null) return;
-                            ids.add(costumeId);
-                        });
+        for (int skinId : GameData.getAvatarCostumeDataMap().keySet()) {
+            var data = GameData.getAvatarCostumeDataMap().get(skinId);
+            if (data == null || !data.isDefaultUnlock()) continue;
+            ids.add(skinId);
+        }
         return ids;
     }
 
-    /** Give replace costume to player (Amber, Jean, Mona, Rosaria) */
+    /** Give the free default-unlock costumes to the player (Amber, Jean, Mona, Rosaria). */
     public void addReplaceCostumes() {
         var currentPlayerCostumes = player.getCostumeList();
         boolean changed = false;
-        for (int costumeId : resolveReplaceCostumeIds()) {
+        for (int costumeId : resolveDefaultUnlockCostumeIds()) {
             if (currentPlayerCostumes.contains(costumeId)) continue;
             this.player.addCostume(costumeId);
             changed = true;

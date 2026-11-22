@@ -179,6 +179,19 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
 
         // Retry only activations that were explicitly persisted as unpaid.
         retryPendingTransPointRewards();
+
+        // The four alternate outfits in AvatarReplaceCostumeExcelConfigData are flagged
+        // isDefaultUnlock in the shipped table and appear in no shop, reward or giving row, so
+        // nothing else can ever hand them to a player. Grant them here, once, idempotently.
+        try {
+            this.addReplaceCostumes();
+        } catch (Throwable e) {
+            emu.grasscutter.Grasscutter.getLogger()
+                    .warn(
+                            "replace costume grant failed uid={} {}",
+                            this.player.getUid(),
+                            e.toString());
+        }
     }
 
     /**********
@@ -1296,19 +1309,37 @@ public final class PlayerProgressManager extends BasePlayerDataManager {
         if (changed) notifyBlossom(sceneId);
     }
 
-    /** Give replace costume to player (Amber, Jean, Mona, Rosaria) */
-    public void addReplaceCostumes() {
-        var currentPlayerCostumes = player.getCostumeList();
+    /**
+     * Costume ids the shipped resource hands out for free: the four alternate outfits in
+     * {@code AvatarReplaceCostumeExcelConfigData} (Amber, Jean, Mona, Rosaria).
+     *
+     * <p>7.2 marks exactly these four rows {@code isDefaultUnlock=true} and {@code hide=true}, and
+     * no shop, reward or giving row references their item ids, so they are not purchasable. Only
+     * ids that a real {@code AvatarCostumeExcelConfigData} row backs are returned, so a resource
+     * tree that failed to load the costume table cannot put a nonexistent skin on a player.
+     */
+    static Set<Integer> resolveReplaceCostumeIds() {
+        var ids = new HashSet<Integer>();
         GameData.getAvatarReplaceCostumeDataMap()
                 .keySet()
                 .forEach(
                         costumeId -> {
-                            if (GameData.getAvatarCostumeDataMap().get(costumeId) == null
-                                    || currentPlayerCostumes.contains(costumeId)) {
-                                return;
-                            }
-                            this.player.addCostume(costumeId);
+                            if (GameData.getAvatarCostumeDataMap().get(costumeId) == null) return;
+                            ids.add(costumeId);
                         });
+        return ids;
+    }
+
+    /** Give replace costume to player (Amber, Jean, Mona, Rosaria) */
+    public void addReplaceCostumes() {
+        var currentPlayerCostumes = player.getCostumeList();
+        boolean changed = false;
+        for (int costumeId : resolveReplaceCostumeIds()) {
+            if (currentPlayerCostumes.contains(costumeId)) continue;
+            this.player.addCostume(costumeId);
+            changed = true;
+        }
+        if (changed) this.player.save();
     }
 
     /** Quest progress */
